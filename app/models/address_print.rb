@@ -1,0 +1,2 @@
+class AddressPrint < ApplicationRecord
+end
