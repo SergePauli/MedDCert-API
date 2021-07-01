@@ -1,11 +1,11 @@
 class CreateAddresses < ActiveRecord::Migration[6.1]
   def change
-    create_table :addresses do |t|
-      t.string :state, null: false, :limit => 2
-      t.string :streetAddressLine, null: false
-      t.string :aoGUID, :limit => 36
-      t.string :houseGUID, :limit => 36
-      t.string :codeKLADR, :limit => 25
+    create_table :addresses, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" } do |t|
+      t.string :state, null: false, :limit => 2, comment: "Код региона в ФНС"
+      t.string :streetAddressLine, null: false, comment: "Код региона в ФНС"
+      t.string :postalCode, :limit => 6, comment: "Почтовый код"
+      t.string :codeKLADR, :limit => 25, comment: "код КЛАДР адресного объекта"
+      t.uuid :parent, null: false, comment: "Идентификатор родительского элемента"
       t.timestamps
     end
     add_index :addresses, :streetAddressLine
