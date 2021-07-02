@@ -1,21 +1,21 @@
 class CreateOrganizations < ActiveRecord::Migration[6.1]
   def change
-    create_table :organizations, :id => false do |t|
-      t.primary_key :id, :limit => 4
-      t.string :oid, null: false, :limit => 36
+    create_table :organizations, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" } do |t|
+      t.string :oid, index: true, null: false
+      t.string :parentOspOid
+      t.string :ospOid
+      t.string :childrenOspOid
       t.string :oldOid, null: false, :limit => 30
-      t.string :scode, :limit => 6
       t.string :nameFull, null: false
       t.string :nameShort, :limit => 100
       t.string :inn, :limit => 10
       t.string :kpp, :limit => 9
       t.string :ogrn, :limit => 16
-      t.string :po_code, :limit => 45
+      t.string :parentId
       t.date :createDate
       t.date :modifyDate
       t.date :deleteDate
       t.string :deleteReason
-      t.belongs_to :address
     end
   end
 end
