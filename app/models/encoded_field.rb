@@ -1,0 +1,2 @@
+class EncodedField < ApplicationRecord
+end

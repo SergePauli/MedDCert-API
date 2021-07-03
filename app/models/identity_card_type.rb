@@ -1,0 +1,2 @@
+class IdentityCardType < ApplicationRecord
+end

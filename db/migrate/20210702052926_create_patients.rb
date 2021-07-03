@@ -1,7 +1,8 @@
-class CreatePatients < ActiveRecord::Migration[6.1]
+class CreatePatientRoles < ActiveRecord::Migration[6.1]
   def change
     create_table :patientRoles, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" } do |t|
       t.uuid :patient, comment: "person ID"
+      t.uuid :identitie, comment: "identitie ID"
       t.uuid :addr, comment: "адрес"
       t.integer :addr_type, :limit => 1, comment: "тип адреса"
       t.integer :administrativeGenderCode, :limit => 1, comment: "Пол"
