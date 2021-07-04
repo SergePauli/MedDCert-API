@@ -1,0 +1,2 @@
+class CodeSystem < ApplicationRecord
+end

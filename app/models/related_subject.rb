@@ -1,0 +1,2 @@
+class RelatedSubject < ApplicationRecord
+end
