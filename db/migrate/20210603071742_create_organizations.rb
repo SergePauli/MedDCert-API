@@ -2,6 +2,9 @@ class CreateOrganizations < ActiveRecord::Migration[6.1]
   def change
     create_table :organizations, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" } do |t|
       t.string :oid, index: true, null: false
+      t.string :okpo, comment: "код ОКПО"
+      t.string :license, comment: "серия и номер лицензии на осуществление медицинской деятельности"
+      t.string :assigningAuthorityName, comment: "указание на Федеральную службу по надзору в сфере здравоохранения и дату регистрации лицензии"
       t.string :parentOspOid
       t.string :ospOid
       t.string :childrenOspOid

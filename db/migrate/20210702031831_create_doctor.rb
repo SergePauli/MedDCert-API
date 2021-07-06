@@ -1,9 +1,9 @@
 class CreateDoctor < ActiveRecord::Migration[6.1]
   def change
-    create_table :doctors, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" } do |t|
-      t.belongs_to :person
-      t.belongs_to :organization
-      t.belongs_to :position
+    create_table :doctors do |t|
+      t.belongs_to :person, index: true
+      t.belongs_to :organization, index: true
+      t.belongs_to :position, index: true
       t.timestamps
     end
   end

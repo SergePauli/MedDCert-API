@@ -1,0 +1,2 @@
+class NullFlavor < ApplicationRecord
+end

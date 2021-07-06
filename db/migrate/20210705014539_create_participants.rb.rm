@@ -1,0 +1,13 @@
+class CreateParticipants < ActiveRecord::Migration[6.1]
+  def change
+    create_table :participants, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "получатели свидетельств и копий" do |t|
+      t.integer :classCode, limit: 1, comment: "enum(родственник - PRS, представитель - AGNT)"
+      t.uuid :certificate_id, index: true, null: false
+      t.uuid :person_id, index: true, null: false
+      t.uuid :identitie_id, null: false
+      t.date :receipt_date
+      t.boolean :original, null: false, :default => true
+      t.timestamps
+    end
+  end
+end
