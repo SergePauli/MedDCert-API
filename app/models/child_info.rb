@@ -1,0 +1,2 @@
+class ChildInfo < ApplicationRecord
+end

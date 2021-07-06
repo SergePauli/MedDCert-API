@@ -1,0 +1,2 @@
+class DeathReason < ApplicationRecord
+end

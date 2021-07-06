@@ -5,7 +5,7 @@ class CreatePersonName < ActiveRecord::Migration[6.1]
       t.string :given_1, index: true
       t.string :given_2, index: true
       t.boolean :actual, index: true
-      t.uuid :parent_id, index: true, null: false, comment: "Идентификатор родительского элемента"
+      t.uuid :parent_guid, index: true, null: false, comment: "Идентификатор родительского элемента"
       t.timestamps
     end
   end

@@ -7,7 +7,7 @@ class CreateAddresses < ActiveRecord::Migration[6.1]
       t.uuid :houseGUID, comment: "Идентификатор fias:HOUSEGUID"
       t.string :postalCode, :limit => 6, comment: "Почтовый код"
       t.string :codeKLADR, :limit => 25, comment: "код КЛАДР адресного объекта"
-      t.uuid :parent, index: true, null: false, comment: "Идентификатор родительского элемента"
+      t.uuid :parent_guid, index: true, null: false, comment: "Идентификатор родительского элемента"
       t.timestamps
     end
     add_index :addresses, :streetAddressLine
