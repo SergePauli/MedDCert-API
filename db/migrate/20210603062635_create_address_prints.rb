@@ -1,7 +1,7 @@
 class CreateAddressPrints < ActiveRecord::Migration[6.1]
   def change
-    create_table :address_prints, id: false do |t|
-      t.belongs_to :address, index: { unique: true }, foreign_key: true
+    create_table :address_prints, id: false, comment: "деструкторизированый адрес для печати свидетельства" do |t|
+      t.belongs_to :address, index: true, unique: false
       t.string :region
       t.string :district
       t.string :city
@@ -9,7 +9,6 @@ class CreateAddressPrints < ActiveRecord::Migration[6.1]
       t.string :street
       t.string :building
       t.string :flat
-      t.timestamps
     end
   end
 end

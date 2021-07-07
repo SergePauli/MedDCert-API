@@ -1,6 +1,6 @@
 class CreatePatients < ActiveRecord::Migration[6.1]
   def change
-    create_table :patients do |t|
+    create_table :patients, comment: "информация об умершем" do |t|
       t.uuid :person_id, index: true, comment: "person ID"
       t.uuid :identitie_id, index: true, comment: "identitie ID"
       t.uuid :addr_id, index: true, comment: "адрес по документу"
