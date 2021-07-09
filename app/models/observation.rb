@@ -1,2 +1,0 @@
-class Observation < ApplicationRecord
-end

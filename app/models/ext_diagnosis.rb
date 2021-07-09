@@ -1,0 +1,2 @@
+class ExtDiagnosis < ApplicationRecord
+end

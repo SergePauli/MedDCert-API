@@ -35,6 +35,8 @@ class CreateCertificates < ActiveRecord::Migration[6.1]
       t.belongs_to :b_reason, class_name: "DeathReason", comment: "б) Патологическое состояние, которое привело к возникновению вышеуказанной причины"
       t.belongs_to :c_reason, class_name: "DeathReason", comment: "в) первоначальная причина смерти"
       t.belongs_to :d_reason, class_name: "DeathReason", comment: "г) внешняя причина при травмах и отравлениях"
+      t.integer :traffic_accident, limit: 1, commet: "Cвязь с ДТП 1.2.643.5.1.13.13.99.2.24"
+      t.integer :pregnancy_connection, limit: 1, commet: "Связь беременностью 1.2.643.5.1.13.13.99.2.25 "
       t.uuid :guid, index: true, null: false, default: -> { "gen_random_uuid()" }, unique: true
       t.timestamps
     end

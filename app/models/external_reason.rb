@@ -1,0 +1,2 @@
+class ExternalReason < ApplicationRecord
+end
