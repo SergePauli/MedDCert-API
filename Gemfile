@@ -34,6 +34,7 @@ gem "bootsnap", ">= 1.4.4", require: false
 # fast XML parser
 gem "nokogiri"
 
+gem "securerandom"
 # use fast import for many records
 gem "activerecord-import"
 

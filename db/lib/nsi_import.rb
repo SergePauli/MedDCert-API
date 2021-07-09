@@ -24,6 +24,10 @@ def easy_import(references_list_oid, mappings, bulk_size = 1000, filters = nil)
           # сопоставление полей, имеющих иное название в модели
           # field mappings, which you need to import
           record.each { |field| params = params.merge(mappings[field["column"]] => field["value"]) if mappings[field["column"]] }
+          # обработка импорта данных связанных таблиц, если таковые есть
+          # add has_one or has_many data to params if exist
+          params = yield record, params if block_given?
+          # add new object to bulk
           records.push(@model_class.new params)
           passed += 1
         end

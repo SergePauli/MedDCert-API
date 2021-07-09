@@ -18,12 +18,8 @@ def run_query(identifier, page = nil, size = nil, filters = nil)
   url_string += "&page=#{page.to_s}" if !page.blank?
   url_string += "&size=#{size.to_s}" if !size.blank?
   filters.each do |filter|
-    url_string += "&filters[]=#{filter}"
+    url_string += "&filters=#{filter}"
   end if !filters.blank?
   r = RestClient.get url_string, HEADERS
   return JSON.parse(r)
-end
-
-# insert recived rows to database
-def row_processing
 end
