@@ -1,5 +1,5 @@
 class CreateAddresses < ActiveRecord::Migration[6.1]
-  def change
+  def up
     create_table :addresses, primary_key: "id", id: :uuid, default: -> { "gen_random_uuid()" } do |t|
       t.string :state, null: false, limit: 2, comment: "Код региона в ФНС"
       t.string :streetAddressLine, null: false, comment: "Адресная строка"
@@ -12,5 +12,11 @@ class CreateAddresses < ActiveRecord::Migration[6.1]
     end
     add_index :addresses, :streetAddressLine
     add_index :addresses, :codeKLADR
+  end
+
+  def down
+    remove_index :addresses, :streetAddressLine
+    remove_index :addresses, :codeKLADR
+    drop_table :addresses
   end
 end

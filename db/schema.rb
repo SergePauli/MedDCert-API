@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 2021_07_09_013536) do
   create_table "contacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "telcom_value", comment: "telcom value"
     t.string "telcom_use", comment: "telcom use-attribute"
+    t.boolean "main", default: false, null: false, comment: "Признак основного контакта"
     t.uuid "parent_guid", null: false, comment: "Идентификатор родительского элемента"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false

@@ -12,23 +12,27 @@ TOO_BIG_BULK_SIZE = 10000
 puts "Загружаем медорганизации"
 mappings = { "id" => "id", "oid" => "oid", "oldOid" => "old_oid", "nameFull" => "name_full", "nameShort" => "name", "parentId" => "parent_id", "deleteDate" => "delete_date", "deleteReason" => "delete_reason", "createDate" => "create_date", "modifyDate" => "modify_date", "organizationType" => "organization_type" }
 address_mappings = { "addrRegionId" => "state", "aoidStreet" => "aoGUID", "houseid" => "houseGUID", "postIndex" => "postalCode" }
+# with childs address records
+addresses = []
 easy_import("1.2.643.5.1.13.13.11.1461", mappings, nil, ["regionId|#{Rails.configuration.region}|EXACT"]) do |record, params|
   address_params = {}
   one_line_string = ""
   record.each { |column|
-    address_params = address_params.merge(address_mappings[column["column"]] => column["value"]) if address_mappings[column["column"]]
-    one_line_string += column["value"] if !column["value"].blank? && column["column"] == "addrRegionName"
-    one_line_string += ", #{column["value"]}" if !column["value"].blank? && ["prefixArea", "prefixStreet", "house"].include?(column["column"])
-    one_line_string += " #{column["value"]}" if !column["value"].blank? && ["areaName", "streetName"].include?(column["column"])
-    one_line_string += " корп.#{column["value"]}" if !column["value"].blank? && column["column"] == "building"
-    one_line_string += " стр.#{column["value"]}" if !column["value"].blank? && column["column"] == "struct"
+    address_params = address_params.merge(address_mappings[column["column"]] => column["value"]) if column["value"] && address_mappings[column["column"]]
+    one_line_string += "#{column["value"]}," if !column["value"].blank? && column["column"] == "addrRegionName"
+    one_line_string += " #{column["value"]}," if !column["value"].blank? && ["prefixArea", "prefixStreet"].include?(column["column"])
+    one_line_string += " #{column["value"]}" if !column["value"].blank? && ["areaName", "streetName", "house"].include?(column["column"])
+    one_line_string += " корп. #{column["value"]}" if !column["value"].blank? && column["column"] == "building"
+    one_line_string += " стр. #{column["value"]}" if !column["value"].blank? && column["column"] == "struct"
   }
-  address_params = address_params.merge("streetAddressLine" => one_line_string)
+  address_params = address_params.merge(streetAddressLine: one_line_string) if !one_line_string.blank?
   guid = SecureRandom.uuid
-  params = params.merge(guid: guid)
   address_params = address_params.merge(parent_guid: guid)
-  params = params.merge(address_attributes: address_params)
+  addresses << Address.new(address_params) if address_params["state"] && address_params[:streetAddressLine]
+  params = params.merge(guid: guid)
 end
+#импортируем и связанные записи адресов
+Address.import addresses
 
 puts "Загружаем должности медработников"
 mappings = { "ID" => "id", "Priority" => "priority", "Name" => "name" }
