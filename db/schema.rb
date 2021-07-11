@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_09_013536) do
+ActiveRecord::Schema.define(version: 2021_07_11_055314) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -310,6 +310,28 @@ ActiveRecord::Schema.define(version: 2021_07_09_013536) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["addr_id"], name: "index_related_subjects_on_addr_id"
     t.index ["person_name_id"], name: "index_related_subjects_on_person_name_id"
+  end
+
+  create_table "tokens", comment: "токены пользователей", force: :cascade do |t|
+    t.bigint "user_id", comment: "one user - one session model"
+    t.string "refresh_token", comment: "токен обновления"
+    t.index ["user_id"], name: "index_tokens_on_user_id"
+  end
+
+  create_table "users", comment: "Пользователи системы", force: :cascade do |t|
+    t.bigint "organization_id", null: false
+    t.bigint "person_name_id", null: false
+    t.string "email", null: false
+    t.string "password"
+    t.uuid "activation_link", default: -> { "gen_random_uuid()" }, null: false
+    t.string "roles", default: "USER", null: false
+    t.boolean "activated", default: false, null: false
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["email"], name: "index_users_on_email"
+    t.index ["organization_id"], name: "index_users_on_organization_id"
+    t.index ["person_name_id"], name: "index_users_on_person_name_id"
   end
 
   create_table "versions", comment: "версии свидетельств", force: :cascade do |t|
