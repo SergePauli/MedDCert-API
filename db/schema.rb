@@ -322,7 +322,7 @@ ActiveRecord::Schema.define(version: 2021_07_11_055314) do
     t.bigint "organization_id", null: false
     t.bigint "person_name_id", null: false
     t.string "email", null: false
-    t.string "password"
+    t.string "password_digest"
     t.uuid "activation_link", default: -> { "gen_random_uuid()" }, null: false
     t.string "roles", default: "USER", null: false
     t.boolean "activated", default: false, null: false
