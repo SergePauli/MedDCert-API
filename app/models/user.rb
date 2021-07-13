@@ -1,6 +1,5 @@
 class User < ApplicationRecord
   has_secure_password
-  #has_secure_password :recovery_password, validations: false
 
   belongs_to :organization
   belongs_to :person_name
@@ -13,4 +12,12 @@ class User < ApplicationRecord
 
   validates :email, presence: true
   validates :email, presence: true, length: { maximum: 255 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
+
+  def organization_name
+    organization.name || organization.name_full
+  end
+
+  def name
+    "#{person_name.family} #{person_name.given_1} #{person_name.given_2}"
+  end
 end

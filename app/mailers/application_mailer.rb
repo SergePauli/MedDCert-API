@@ -1,10 +1,21 @@
 class ApplicationMailer < ActionMailer::Base
-  default from: "from@example.com"
+  default from: Rails.configuration.from_mail
   layout "mailer"
 
-  def confirmation_email
-    @user = params[:user]
-    @url = params[:activation_link]
-    mail(to: @user.email, subject: "Welcome to My Awesome Site")
+  def confirmation_mail
+    @user = User.find(params[:user_id])
+    puts "person_name", @user.person_name_id, "@user.id", @user.id
+    if @user
+      @name = @user.name
+      @email = @user.email
+      @org_name = @user.organization_name
+      @url = "#{Rails.configuration.base_url}/auth/activate/#{@user.activation_link}"
+      mail(to: Rails.configuration.admin_mail, subject: "Запрос на активацию аккаунта МедСС")
+    end
+  end
+
+  def welcome_mail
+    @email = params[:email]
+    mail(to: params[:to], subject: "МедСС: аккаунт был активирован")
   end
 end

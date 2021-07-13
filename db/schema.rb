@@ -320,7 +320,7 @@ ActiveRecord::Schema.define(version: 2021_07_11_055314) do
 
   create_table "users", comment: "Пользователи системы", force: :cascade do |t|
     t.bigint "organization_id", null: false
-    t.bigint "person_name_id", null: false
+    t.uuid "person_name_id", null: false
     t.string "email", null: false
     t.string "password_digest"
     t.uuid "activation_link", default: -> { "gen_random_uuid()" }, null: false
@@ -331,7 +331,6 @@ ActiveRecord::Schema.define(version: 2021_07_11_055314) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
-    t.index ["person_name_id"], name: "index_users_on_person_name_id"
   end
 
   create_table "versions", comment: "версии свидетельств", force: :cascade do |t|
