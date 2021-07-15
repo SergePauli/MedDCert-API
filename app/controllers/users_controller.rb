@@ -3,11 +3,12 @@ require "./app/services/tokens_service"
 class UsersController < ApplicationController
   include TokensService
   include ActionController::Cookies
+  #include ActionController::BadRequest
 
   # POST auth/registration
   def registration
-    if User.find_by(email: params[:email])
-      raise "Error: User with given email elready exist"
+    if User.find_by(email: params[:user][:email])
+      raise ApiError.new("Пользователь с таким email уже зарегистрирован", :unprocessable_entity)
     end
     @user = User.new user_params
     if @user.save
@@ -30,12 +31,12 @@ class UsersController < ApplicationController
       if @user.save
         ApplicationMailer.with(email: @user.email, to: Rails.configuration.admin_mail).welcome_mail.deliver_later
         ApplicationMailer.with(email: @user.email, to: @user.email).welcome_mail.deliver_later
-        render html: "<h1>Аккаунт успешно активирован</h1>"
+        redirect_to Rails.configuration.client_url + "/messages?value=Аккаунт успешно активирован"
       end
     elsif @user.activated
-      render html: "<h1>Данный аккаунт был активирован ранее</h1>"
+      redirect_to Rails.configuration.client_url + "/messages?value=Ссылка была использована ранее"
     else
-      render html: "<h1>Ссылка не действительна</h1>"
+      redirect_to Rails.configuration.client_url + "/messages?value=Ссылка не действительна"
     end
   end
 
@@ -48,7 +49,7 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(
-      :email, :organization_id, :password, :password_confirmation, person_name_attributes: [:family, :given_1, :given_2], contacts_attributes: [:value, :use],
+      :email, :organization_id, :password, :password_confirmation, :roles, person_name_attributes: [:family, :given_1, :given_2], contacts_attributes: [:value, :use],
     )
   end
 end

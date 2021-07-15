@@ -4,7 +4,6 @@ class ApplicationMailer < ActionMailer::Base
 
   def confirmation_mail
     @user = User.find(params[:user_id])
-    puts "person_name", @user.person_name_id, "@user.id", @user.id
     if @user
       @name = @user.name
       @email = @user.email

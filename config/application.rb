@@ -38,6 +38,9 @@ module CleanAPI
 
     config.api_only = true
 
+    #Frontend url
+    config.client_url = "http://ya.ru"
+
     # code of russia region
     config.region = "28"
 
@@ -54,21 +57,23 @@ module CleanAPI
     #SMTP server
     ActionMailer::Base.smtp_settings = {
       address: "smtp.yandex.ru",
-      domain: "cbsib.ru",
+      domain: "amurzdrav.ru",
       port: 465,
-      user_name: "test@cbsib.ru",
-      password: "jhyjaztsvstbcpbc",
+      user_name: "medss@amurzdrav.ru",
+      password: "hcpfupuagwmksfch",
       authentication: "plain",
       ssl: true,
     }
+
     config.base_url = "http://localhost:3000"
+
     config.action_mailer.default_url_options = { host: "localhost:3000" }
     config.action_mailer.delivery_method = :smtp
     #config.action_mailer.raise_delivery_errors = true
     # Send email in development mode.
     config.action_mailer.perform_deliveries = true
     # c какого адреса рассылать уведомления
-    config.from_mail = "test@cbsib.ru"
+    config.from_mail = "medss@amurzdrav.ru"
     # почта администратора приложения
     config.admin_mail = "sergepauli@yandex.ru"
   end
