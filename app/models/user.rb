@@ -25,7 +25,7 @@ class User < ApplicationRecord
   after_initialize do |user|
     if user.person_name && user.person_name_id == nil
       exist_person_name = PersonName.where(family: user.person_name.family).where(given_1: user.person_name.given_1).where(given_2: user.person_name.given_2)
-      user.person_name = exist_person_name.first if exist_person_name
+      user.person_name = exist_person_name.first if exist_person_name && exist_person_name.first
     end
   end
 end
