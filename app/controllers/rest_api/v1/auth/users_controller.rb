@@ -5,7 +5,7 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   include ActionController::Cookies
   #include ActionController::BadRequest
 
-  # POST auth/registration
+  # POST REST_API/v1/auth/registration
   def registration
     if User.find_by(email: params[:user][:email])
       raise ApiError.new("Пользователь с таким email уже зарегистрирован", :unprocessable_entity)
@@ -23,7 +23,7 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     end
   end
 
-  # GET auth/activation
+  # GET REST_API/v1/auth/activation
   def activation
     @user = User.where(activation_link: params[:link]).first
     if @user && !@user.activated

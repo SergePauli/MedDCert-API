@@ -8,7 +8,7 @@ class ApplicationMailer < ActionMailer::Base
       @name = @user.name
       @email = @user.email
       @org_name = @user.organization_name
-      @url = "#{Rails.configuration.base_url}/auth/activate/#{@user.activation_link}"
+      @url = "#{Rails.configuration.base_url}/REST_API/v1/auth/activate/#{@user.activation_link}"
       mail(to: Rails.configuration.admin_mail, subject: "Запрос на активацию аккаунта МедСС")
     end
   end
