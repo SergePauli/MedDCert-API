@@ -40,6 +40,20 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     end
   end
 
+  # POST "REST_API/v1/auth/login"
+  def login
+    @user = User.find_by(email: params[:email])
+    if @user&.authenticate(params[:password])
+      dto = { id: @user.id, email: @user.email, organization_id: @user.organization_id }
+      @tokens = TokensService.generate_tokens(dto)
+      TokensService.save_token(@user.id, @tokens[:refresh])
+      cookies[:refresh_token] = { value: @tokens[:refresh], expires: Time.now + 3600 * 144, httponly: true }
+      render json: { user: dto, tokens: @tokens }, status: :ok
+    else
+      raise ApiError.new("Неверный пароль или пользователь", :unauthorized)
+    end
+  end
+
   # GET auth/
   def index
     render json: { "erer": "rererer" }, status: :ok
