@@ -54,6 +54,14 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     end
   end
 
+  # POST "REST_API/v1/auth/logout"
+  def logout
+    token = cookies[:refresh_token]
+    token = TokensService.remove_token(token)
+    cookies.delete :refresh_token
+    render json: { token: token }, status: :ok
+  end
+
   # GET auth/
   def index
     render json: { "erer": "rererer" }, status: :ok

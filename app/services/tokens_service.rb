@@ -19,4 +19,8 @@ module TokensService
     end
     @token = Token.create!({ user_id: user_id, refresh_token: refresh_token })
   end
+  # удаляем токен обновлений из базы
+  def TokensService.remove_token(refresh_token)
+    @token = Token.destroy_by(refresh_token: refresh_token)
+  end
 end
