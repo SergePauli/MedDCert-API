@@ -1,4 +1,4 @@
-class ApplicationController < ActionController::API
+class RestApi::V1::ApplicationController < ActionController::API
   ## API Universal Exception Handling
   class ApiError < StandardError
     def initialize(message, status)

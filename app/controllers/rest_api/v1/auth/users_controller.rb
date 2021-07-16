@@ -1,6 +1,6 @@
 require "./app/services/tokens_service"
 
-class UsersController < ApplicationController
+class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   include TokensService
   include ActionController::Cookies
   #include ActionController::BadRequest
