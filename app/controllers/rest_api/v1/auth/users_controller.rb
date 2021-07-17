@@ -45,7 +45,7 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   # POST "REST_API/v1/auth/logout"
   def logout
     token = cookies[:refresh_token]
-    token = TokensService.remove_token(token)
+    token = JsonWebToken.remove_token(token)
     cookies.delete :refresh_token
     render json: { token: token }, status: :ok
   end
@@ -54,8 +54,8 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   def refresh
     refresh_token = cookies[:refresh_token]
     raise ApiError.new("Ошибка авторизации 1", :unauthorized) if refresh_token.blank?
-    user_data = TokensService.validate_token(refresh_token, SECRET[:refresh_token])[0]
-    raise ApiError.new("Ошибка авторизации 2", :unauthorized) if !user_data
+    user_data = JsonWebToken.validate_token(refresh_token, JsonWebToken::REFRESH_SECRET)
+    raise ApiError.new("Ошибка авторизации 2", :unauthorized) unless user_data
     if Token.find_by(refresh_token: refresh_token)
       @user = User.find(user_data["data"]["id"])
       set_tokens
@@ -78,10 +78,10 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   end
 
   def set_tokens
-    dto = { id: @user.id, email: @user.email, organization_id: @user.organization_id }
+    dto = { id: @user.id, email: @user.email }
     tokens = JsonWebToken.generate_tokens(dto)
     puts tokens
-    TokensService.save_token(@user.id, tokens[:refresh])
+    JsonWebToken.save_token(@user.id, tokens[:refresh])
     cookies[:refresh_token] = { value: tokens[:refresh], expires: 144.hour, httponly: true }
     render json: { user: dto, tokens: tokens }, status: :ok
   end
