@@ -26,7 +26,7 @@ class RestApi::V1::ApplicationController < ActionController::API
     header = request.headers["Authorization"]
     raise ApiError.new("Не авторизовано", :unauthorized) unless header
     header = header.split(" ").last
-    @current_user = TokensService.validate_token(header, SECRET[:access_token])
+    @current_user = JsonWebToken.validate_token(header, JsonWebToken::ACCESS_SECRET)
     raise ApiError.new("Не авторизовано", :unauthorized) unless @current_user
   end
 end
