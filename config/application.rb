@@ -38,6 +38,9 @@ module CleanAPI
 
     config.api_only = true
 
+    # add autoload classes from lib/
+    config.autoload_paths << Rails.root.join("lib")
+
     #Frontend url
     config.client_url = "http://ya.ru"
 
