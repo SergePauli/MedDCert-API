@@ -3,7 +3,6 @@ require "./app/services/tokens_service"
 class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   include TokensService
   include ActionController::Cookies
-  #include ActionController::BadRequest
 
   # POST REST_API/v1/auth/registration
   def registration
@@ -12,12 +11,8 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     end
     @user = User.new user_params
     if @user.save
-      dto = { id: @user.id, email: @user.email, organization_id: @user.organization_id }
       ApplicationMailer.with(user_id: @user.id).confirmation_mail.deliver_later
-      @tokens = TokensService.generate_tokens(dto)
-      TokensService.save_token(@user.id, @tokens[:refresh])
-      cookies[:refresh_token] = { value: @tokens[:refresh], expires: Time.now + 3600 * 144, httponly: true }
-      render json: { user: dto, tokens: @tokens }, status: :ok
+      set_tokens
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
     end
@@ -44,13 +39,9 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   def login
     @user = User.find_by(email: params[:email])
     if @user&.authenticate(params[:password])
-      dto = { id: @user.id, email: @user.email, organization_id: @user.organization_id }
-      @tokens = TokensService.generate_tokens(dto)
-      TokensService.save_token(@user.id, @tokens[:refresh])
-      cookies[:refresh_token] = { value: @tokens[:refresh], expires: Time.now + 3600 * 144, httponly: true }
-      render json: { user: dto, tokens: @tokens }, status: :ok
+      set_tokens
     else
-      raise ApiError.new("Неверный пароль или пользователь", :unauthorized)
+      raise ApiError.new("Неверный пароль или пользователь", :not_acceptable)
     end
   end
 
@@ -60,6 +51,20 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     token = TokensService.remove_token(token)
     cookies.delete :refresh_token
     render json: { token: token }, status: :ok
+  end
+
+  # GET "REST_API/v1/auth/refresh" обновляем токен
+  def refresh
+    refresh_token = cookies[:refresh_token]
+    raise ApiError.new("Ошибка авторизации 1", :unauthorized) if refresh_token.blank?
+    user_data = TokensService.validate_token(refresh_token, SECRET[:refresh_token])[0]
+    raise ApiError.new("Ошибка авторизации 2", :unauthorized) if !user_data
+    if Token.find_by(refresh_token: refresh_token)
+      @user = User.find(user_data["data"]["id"])
+      set_tokens
+    else
+      raise ApiError.new("Ошибка авторизации 3", :unauthorized)
+    end
   end
 
   # GET auth/
@@ -73,5 +78,13 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     params.require(:user).permit(
       :email, :organization_id, :password, :password_confirmation, :roles, person_name_attributes: [:family, :given_1, :given_2], contacts_attributes: [:value, :use],
     )
+  end
+
+  def set_tokens
+    dto = { id: @user.id, email: @user.email, organization_id: @user.organization_id }
+    @tokens = TokensService.generate_tokens(dto)
+    TokensService.save_token(@user.id, @tokens[:refresh])
+    cookies[:refresh_token] = { value: @tokens[:refresh], expires: 144.hour, httponly: true }
+    render json: { user: dto, tokens: @tokens }, status: :ok
   end
 end
