@@ -79,9 +79,10 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
 
   def set_tokens
     dto = { id: @user.id, email: @user.email, organization_id: @user.organization_id }
-    @tokens = TokensService.generate_tokens(dto)
-    TokensService.save_token(@user.id, @tokens[:refresh])
-    cookies[:refresh_token] = { value: @tokens[:refresh], expires: 144.hour, httponly: true }
-    render json: { user: dto, tokens: @tokens }, status: :ok
+    tokens = JsonWebToken.generate_tokens(dto)
+    puts tokens
+    TokensService.save_token(@user.id, tokens[:refresh])
+    cookies[:refresh_token] = { value: tokens[:refresh], expires: 144.hour, httponly: true }
+    render json: { user: dto, tokens: tokens }, status: :ok
   end
 end
