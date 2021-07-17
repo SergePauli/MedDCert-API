@@ -21,5 +21,20 @@ class JsonWebToken
     rescue
       nil
     end
+
+    # удаляем токен обновлений из базы
+    def remove_token(refresh_token)
+      @token = Token.destroy_by(refresh_token: refresh_token)
+    end
+
+    # обновляем или сохраняем refresh_token в базе
+    def save_token(user_id, refresh_token)
+      @token = Token.find_by(user_id: user_id)
+      if @token
+        @token.refresh_token = refresh_token
+        return @token.save!
+      end
+      @token = Token.create!({ user_id: user_id, refresh_token: refresh_token })
+    end
   end
 end
