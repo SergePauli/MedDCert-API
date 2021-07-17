@@ -1,4 +1,8 @@
+require "./app/services/tokens_service"
+
 class RestApi::V1::ApplicationController < ActionController::API
+  include TokensService
+
   before_action :authenticate_request
   attr_reader :current_user
 

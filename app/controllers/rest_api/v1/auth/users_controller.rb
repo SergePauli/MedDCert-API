@@ -1,7 +1,4 @@
-require "./app/services/tokens_service"
-
 class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
-  include TokensService
   include ActionController::Cookies
 
   # POST REST_API/v1/auth/registration
