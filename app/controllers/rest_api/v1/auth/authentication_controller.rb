@@ -1,4 +1,4 @@
-class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
+class RestApi::V1::Auth::AuthenticationController < RestApi::V1::ApplicationController
   include ActionController::Cookies
   skip_before_action :authenticate_request, except: :index
   # POST REST_API/v1/auth/registration
