@@ -22,7 +22,7 @@ class RestApi::V1::ApplicationController < ActionController::API
     render json: { errors: [exception.message] }, status: exception.status
   end
 
-  def authorize_request
+  def authenticate_request
     header = request.headers["Authorization"]
     raise ApiError.new("Не авторизовано", :unauthorized) unless header
     header = header.split(" ").last

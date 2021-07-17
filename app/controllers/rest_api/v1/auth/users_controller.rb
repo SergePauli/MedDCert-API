@@ -1,6 +1,6 @@
 class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
   include ActionController::Cookies
-
+  skip_before_action :authenticate_request, except: :index
   # POST REST_API/v1/auth/registration
   def registration
     if User.find_by(email: params[:user][:email])
@@ -64,9 +64,9 @@ class RestApi::V1::Auth::UsersController < RestApi::V1::ApplicationController
     end
   end
 
-  # GET auth/
+  # GET "REST_API/v1/auth/"
   def index
-    render json: { "erer": "rererer" }, status: :ok
+    render json: { "users": User.all }, status: :ok
   end
 
   private
