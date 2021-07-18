@@ -59,21 +59,21 @@ module CleanAPI
       address: "smtp.yandex.ru",
       domain: "amurzdrav.ru",
       port: 465,
-      user_name: "medss@amurzdrav.ru",
-      password: "hcpfupuagwmksfch",
+      user_name: ENV.fetch("MAIL_USER"),
+      password: ENV.fetch("MAIL_PASS"),
       authentication: "plain",
       ssl: true,
     }
 
-    config.base_url = "http://localhost:3000"
+    config.base_url = "http://localhost:5000"
 
-    config.action_mailer.default_url_options = { host: "localhost:3000" }
+    config.action_mailer.default_url_options = { host: "localhost:5000" }
     config.action_mailer.delivery_method = :smtp
     #config.action_mailer.raise_delivery_errors = true
     # Send email in development mode.
     config.action_mailer.perform_deliveries = true
     # c какого адреса рассылать уведомления
-    config.from_mail = "medss@amurzdrav.ru"
+    config.from_mail = ENV["mail_user"]
     # почта администратора приложения
     config.admin_mail = "sergepauli@yandex.ru"
   end
