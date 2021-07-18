@@ -13,7 +13,8 @@ class User < ApplicationRecord
   validates_associated :organization
   validates :email, presence: true
   validates :email, presence: true, length: { maximum: 255 }, format: { with: VALID_EMAIL_REGEX }, uniqueness: { case_sensitive: false }
-
+  scope :only_activated, -> { where(activated: true) }
+  # Ex:- scope :active, -> {where(:active => true)}
   def organization_name
     organization.name || organization.name_full
   end

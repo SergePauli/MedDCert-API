@@ -35,7 +35,7 @@ class RestApi::V1::Auth::AuthenticationController < RestApi::V1::ApplicationCont
   # POST "REST_API/v1/auth/login"
   def login
     @user = User.find_by(email: params[:email])
-    if @user&.authenticate(params[:password])
+    if @user&.authenticate(params[:password]) && @user.activated
       set_tokens
     else
       raise ApiError.new("Неверный пароль или пользователь", :not_acceptable)
