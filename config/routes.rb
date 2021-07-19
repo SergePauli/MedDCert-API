@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     get "/refresh", action: "refresh"
     get "/", action: "index"
   end
-  # восстановление пароля
+  # Восстановление пароля
   scope "REST_API/v1/auth", controller: "rest_api/v1/auth/pass_recovery" do
     post "/renew_link", action: "renew_link"
     post "/pwd_renew", action: "pwd_renew"
