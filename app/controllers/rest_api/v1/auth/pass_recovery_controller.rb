@@ -6,7 +6,11 @@ class RestApi::V1::Auth::PassRecoveryController < RestApi::V1::ApplicationContro
   # generating password renew link and send to user via email
   def renew_link
     @user.activation_link = UUID.new
-    ApplicationMailer.with(email: params[:email]).pass_renew_mail.deliver_later
+    if @user.save
+      ApplicationMailer.with(email: @user.email, link: @user.activation_link).pass_renew_mail.deliver_later
+    else
+      raise ApiError.new("Internal Server Error", 500)
+    end
   end
 
   # POST REST_API/v1/auth/pwd_renew
