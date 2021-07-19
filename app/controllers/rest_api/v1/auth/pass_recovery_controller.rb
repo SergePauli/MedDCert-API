@@ -5,21 +5,15 @@ class RestApi::V1::Auth::PassRecoveryController < RestApi::V1::ApplicationContro
   # POST REST_API/v1/auth/renew_link
   # generating password renew link and send to user via email
   def renew_link
-    @user.activation_link = UUID.new
-    if @user.save
-      ApplicationMailer.with(email: @user.email, link: @user.activation_link).pass_renew_mail.deliver_later
-    else
-      raise ApiError.new("Internal Server Error", 500)
-    end
+    ApplicationMailer.with(email: @user.email, link: @user.activation_link).pass_renew_mail.deliver_later
   end
 
   # POST REST_API/v1/auth/pwd_renew
   # password change
   def pwd_renew
-    permit = params.require(:user).permit(
+    if @user.update params.require(:user).permit(
       :email, :password, :password_confirmation
     )
-    if @user.update permit.merge(activated: true)
       render json: { message: "password changed" }, status: :ok
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
