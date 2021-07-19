@@ -19,4 +19,10 @@ class ApplicationMailer < ActionMailer::Base
     @email = params[:email]
     mail(to: params[:to], subject: "МедСС: аккаунт был активирован")
   end
+
+  def pass_renew_mail
+    @email = params[:email]
+    @url = "#{Rails.configuration.client_url}/pass_renew?code=#{params[:link]}"
+    mail(to: @email, subject: "МедСС: запрос на смену пароля")
+  end
 end
