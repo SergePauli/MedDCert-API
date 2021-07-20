@@ -38,15 +38,15 @@ module CleanAPI
 
     config.api_only = true
 
-    #Frontend url
+    # Frontend url
     config.client_url = "http://ya.ru"
+    # Host name and port
+    config.host = "localhost:5000"
+    # Endpoint base address
+    config.base_url = "http://#{config.host}"
 
     # code of russia region
     config.region = "28"
-
-    # put here your secret_key for JWT token
-    config.jwt_access_secret = "suitable-for-API-only-apps"
-    config.jwt_refresh_secret = "your-secret_key-for-JWT"
 
     # cookies config
     config.middleware.use ActionDispatch::Cookies
@@ -54,26 +54,27 @@ module CleanAPI
     config.action_dispatch.cookies_serializer = :json
 
     # ActionMailer Config
+
+    # c какого адреса рассылать уведомления
+    config.from_mail = ENV["mail_user"]
+
     #SMTP server
     ActionMailer::Base.smtp_settings = {
       address: "smtp.yandex.ru",
       domain: "amurzdrav.ru",
       port: 465,
-      user_name: ENV.fetch("MAIL_USER"),
+      user_name: config.from_mail,
       password: ENV.fetch("MAIL_PASS"),
       authentication: "plain",
       ssl: true,
     }
 
-    config.base_url = "http://localhost:5000"
-
-    config.action_mailer.default_url_options = { host: "localhost:5000" }
+    config.action_mailer.default_url_options = { host: config.host }
     config.action_mailer.delivery_method = :smtp
     #config.action_mailer.raise_delivery_errors = true
     # Send email in development mode.
     config.action_mailer.perform_deliveries = true
-    # c какого адреса рассылать уведомления
-    config.from_mail = ENV["mail_user"]
+
     # почта администратора приложения
     config.admin_mail = "sergepauli@yandex.ru"
   end
