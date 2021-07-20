@@ -48,6 +48,9 @@ module CleanAPI
     # code of russia region
     config.region = "28"
 
+    # your userkey from NSI.minzdrav.ru
+    config.nsi_token = ENV["NSI_TOKEN"]
+
     # cookies config
     config.middleware.use ActionDispatch::Cookies
     config.middleware.use ActionDispatch::Session::CookieStore
@@ -56,7 +59,7 @@ module CleanAPI
     # ActionMailer Config
 
     # c какого адреса рассылать уведомления
-    config.from_mail = ENV["mail_user"]
+    config.from_mail = ENV["MAIL_USER"]
 
     #SMTP server
     ActionMailer::Base.smtp_settings = {
