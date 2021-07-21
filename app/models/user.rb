@@ -29,4 +29,8 @@ class User < ApplicationRecord
       user.person_name = exist_person_name.first if exist_person_name && exist_person_name.first
     end
   end
+
+  def self.permitted_params
+    [:id, :email, :roles, :activated, :guid]
+  end
 end
