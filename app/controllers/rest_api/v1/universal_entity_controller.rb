@@ -45,7 +45,9 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   def permitted_params
     if params[:select]
-      params.require(:select).permit(@model_class.permitted_params)
+      params[:select].each do |field|
+        field.to_sym
+      end
     else
       params.require(params[:model_name].to_sym).permit(@model_class.permitted_params)
     end
