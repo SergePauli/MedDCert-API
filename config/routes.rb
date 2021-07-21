@@ -15,4 +15,12 @@ Rails.application.routes.draw do
     post "/renew_link", action: "renew_link"
     post "/pwd_renew", action: "pwd_renew"
   end
+  # Универсальный контроллер
+  scope "REST_API/v1/model/:model_name", controller: "rest_api/v1/universal_entity" do
+    post "/", action: "index"
+    post "/:id", action: "show"
+    post "/add", action: "create"
+    put "/:id", action: "update"
+    delete "/:id", action: "destroy"
+  end
 end
