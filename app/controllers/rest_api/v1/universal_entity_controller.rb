@@ -9,7 +9,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @model_class
     @res = @res.limit(params[:limit].to_i) if params[:limit]
     @res = @res.offset(params[:offset].to_i) if params[:offset]
-    @res = @res.select(permitted_params) if !params[:select].blank?
+    @res = @res.select(params[:select]) if !params[:select].blank?
     @res = @res.ransack(params[:q]).result if !params[:q].blank?
     @res = @res.count if !params[:count].blank?
     @res = @res.includes(params[:includes]) if !params[:includes].blank?
@@ -30,8 +30,8 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   end
 
   def show
-    @res = @model_class.select(permitted_params) if !params[:select].blank?
-    render json: { status: 200, data: @res }
+    @res = @model_class.select(params[:select]) if !params[:select].blank?
+    render json: @res
   end
 
   def create
@@ -49,13 +49,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   private
 
   def permitted_params
-    if params[:select]
-      params[:select].each do |field|
-        field.to_sym
-      end
-    else
-      params.require(params[:model_name].to_sym).permit(@model_class.permitted_params)
-    end
+    params.require(params[:model_name].to_sym).permit(@model_class.permitted_params)
   end
 
   def get_model_name
