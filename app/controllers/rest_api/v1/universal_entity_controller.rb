@@ -15,14 +15,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @res.includes(params[:includes]) if !params[:includes].blank?
     r_options = {}
     if !params[:render_options].blank?
-      r_options = r_options.merge(only: params[:render_options][:only]) if params[:render_options][:only]
-      r_options = r_options.merge(except: params[:render_options][:except]) if params[:render_options][:except]
-      if params[:render_options][:include]
-        r_options[:include] = []
-        params[:render_options][:include].each do |option|
-          r_options[:include].push(params[option] ? { option => params[option] } : option)
-        end
-      end
+      r_options = render_options(params[:render_options])
       render json: @res.to_json(r_options)
     else
       render json: @res
@@ -31,7 +24,13 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   def show
     @res = @model_class.select(params[:select]) if !params[:select].blank?
-    render json: @res
+    if !params[:render_options].blank?
+      r_options = render_options(params[:render_options])
+      print r_options
+      render json: @res.to_json(r_options)
+    else
+      render json: @res
+    end
   end
 
   def create
@@ -70,5 +69,27 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   def action_result
     raise ApiError.new(@res.errors[:base].to_s, :bad_request) unless @res.errors[:base].empty?
     render json: @res
+  end
+
+  # create options for to_json render from params
+  def render_options(options)
+    r_options = {}
+    r_options = r_options.merge(only: options[:only]) if options[:only]
+    r_options = r_options.merge(except: options[:except]) if options[:except]
+    if options[:include]
+      r_options[:include] = []
+      options[:include].each do |option|
+        if params[option] && params[option][:include]
+          # use recursive rendering
+          fix_option = { option => render_options(params[option]) }
+        elsif params[option]
+          fix_option = { option => params[option] }
+        else
+          fix_option = option
+        end
+        r_options[:include].push(fix_option)
+      end
+    end
+    r_options
   end
 end
