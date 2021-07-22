@@ -5,14 +5,21 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   before_action :find_record, only: [:show, :update, :destroy]
   after_action :action_result, only: [:create, :update, :destroy]
 
+  # POST /REST_API/v1/model/:model_name
+  # avaible options:
+  #  :select for selection attributes of model,
+  #  :render_options for to_json method
+  #  :limit, :offset, :count for pagination support
+  #  :q - option from runsack lib for supporting filtration
+  #  :includes - for impatient loading of links(problem of N+1 query)
   def index
     @res = @model_class
     @res = @res.limit(params[:limit].to_i) if params[:limit]
     @res = @res.offset(params[:offset].to_i) if params[:offset]
-    @res = @res.select(params[:select]) if !params[:select].blank?
-    @res = @res.ransack(params[:q]).result if !params[:q].blank?
-    @res = @res.count if !params[:count].blank?
-    @res = @res.includes(params[:includes]) if !params[:includes].blank?
+    @res = @res.select(params[:select]) unless params[:select].blank?
+    @res = @res.ransack(params[:q]).result unless params[:q].blank?
+    @res = @res.count unless params[:count].blank?
+    @res = @res.includes(params[:includes]) unless params[:includes].blank?
     r_options = {}
     if !params[:render_options].blank?
       r_options = render_options(params[:render_options])
@@ -22,25 +29,31 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     end
   end
 
+  # POST /REST_API/v1/model/:model_name/:id
+  # avaible options:
+  #  :select for selection attributes of model,
+  #  :render_options for to_json method
   def show
-    @res = @model_class.select(params[:select]) if !params[:select].blank?
-    if !params[:render_options].blank?
-      r_options = render_options(params[:render_options])
-      print r_options
-      render json: @res.to_json(r_options)
-    else
+    @res = @model_class.select(params[:select]) unless params[:select].blank?
+    if params[:render_options].blank?
       render json: @res
+    else
+      r_options = render_options(params[:render_options])
+      render json: @res.to_json(r_options)
     end
   end
 
+  # POST /REST_API/v1/model/:model_name/add
   def create
     @res = @model_class.create(permitted_params)
   end
 
+  # PUT /REST_API/v1/model/:model_name/:id
   def update
     @res.update(permitted_params)
   end
 
+  # DELETE /REST_API/v1/model/:model_name/:id
   def destroy
     @res.destroy
   end
