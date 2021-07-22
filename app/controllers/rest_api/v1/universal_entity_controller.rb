@@ -12,13 +12,8 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @res.select(permitted_params) if !params[:select].blank?
     @res = @res.ransack(params[:q]).result if !params[:q].blank?
     @res = @res.count if !params[:count].blank?
+    @res = @res.includes(params[:includes]) if !params[:includes].blank?
     r_options = {}
-    if !params[:includes].blank?
-      @res = @res.preload(:person_name).all  #params[:includes]
-      @res.each do |record|
-        puts record.person_name.family
-      end
-    end
     if !params[:render_options].blank?
       r_options = r_options.merge(only: params[:render_options][:only]) if params[:render_options][:only]
       r_options = r_options.merge(except: params[:render_options][:except]) if params[:render_options][:except]
@@ -30,7 +25,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
       end
       render json: @res.to_json(r_options)
     else
-      render json: { data: "ok" } #@res
+      render json: @res
     end
   end
 
@@ -80,6 +75,6 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   def action_result
     raise ApiError.new(@res.errors[:base].to_s, :bad_request) unless @res.errors[:base].empty?
-    render json: { status: 200, data: @res }
+    render json: @res
   end
 end
