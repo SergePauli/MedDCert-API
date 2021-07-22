@@ -10,17 +10,27 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @res.limit(params[:limit].to_i) if params[:limit]
     @res = @res.offset(params[:offset].to_i) if params[:offset]
     @res = @res.select(permitted_params) if !params[:select].blank?
-    @res = @res.ransack(params[:q]).result
-    if !params[:render_options].blank?
-      resultes_arr = Array.new
-      @resultes = @res.includes JSON.parse params[:includes] if !params[:includes].blank?
-      @resultes.each do |r|
-        resultes_arr.push r.as_json JSON.parse params[:render_options]
+    @res = @res.ransack(params[:q]).result if !params[:q].blank?
+    @res = @res.count if !params[:count].blank?
+    r_options = {}
+    if !params[:includes].blank?
+      @res = @res.preload(:person_name).all  #params[:includes]
+      @res.each do |record|
+        puts record.person_name.family
       end
-      render json: { status: 200, data: resultes_arr }
+    end
+    if !params[:render_options].blank?
+      r_options = r_options.merge(only: params[:render_options][:only]) if params[:render_options][:only]
+      r_options = r_options.merge(except: params[:render_options][:except]) if params[:render_options][:except]
+      if params[:render_options][:include]
+        r_options[:include] = []
+        params[:render_options][:include].each do |option|
+          r_options[:include].push(params[option] ? { option => params[option] } : option)
+        end
+      end
+      render json: @res.to_json(r_options)
     else
-      @res = @res.count if !params[:count].blank?
-      render json: { status: 200, data: @res }
+      render json: { data: "ok" } #@res
     end
   end
 
