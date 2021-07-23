@@ -22,7 +22,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @res.includes(params[:includes]) unless params[:includes].blank?
     r_options = {}
     if !params[:render_options].blank?
-      r_options = render_options(params[:render_options])
+      r_options = render_options(params[:render_options].to_unsafe_h)
       render json: @res.to_json(r_options)
     else
       render json: @res
@@ -86,23 +86,23 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   # create options for to_json render from params
   def render_options(options)
-    r_options = {}
-    r_options = r_options.merge(only: options[:only]) if options[:only]
-    r_options = r_options.merge(except: options[:except]) if options[:except]
-    if options[:include]
-      r_options[:include] = []
-      options[:include].each do |option|
-        if params[option] && params[option][:include]
-          # use recursive rendering
-          fix_option = { option => render_options(params[option]) }
-        elsif params[option]
-          fix_option = { option => params[option] }
-        else
-          fix_option = option
+    options.reduce({}) do |result, (key, option)|
+      if key == "include"
+        result[:include] = option.reduce([]) do |sub_result, sub_option|
+          if params[sub_option] && params[sub_option][:include]
+            # use recursive rendering
+            fix_option = { sub_option => render_options(params[sub_option].to_unsafe_h) }
+          elsif params[sub_option]
+            fix_option = { sub_option => params[sub_option].to_unsafe_h }
+          else
+            fix_option = sub_option
+          end
+          sub_result.push(fix_option)
         end
-        r_options[:include].push(fix_option)
+      else
+        result = result.merge(key.to_sym => option)
       end
+      result
     end
-    r_options
   end
 end
