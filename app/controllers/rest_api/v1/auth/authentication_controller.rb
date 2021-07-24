@@ -78,7 +78,7 @@ class RestApi::V1::Auth::AuthenticationController < RestApi::V1::ApplicationCont
   end
 
   def set_tokens
-    dto = { id: @user.id, email: @user.email }
+    dto = { id: @user.id, email: @user.email, roles: @user.roles, organization_id: @user.organization_id, activated: @user.activated }
     tokens = JsonWebToken.generate_tokens(dto)
     puts tokens
     JsonWebToken.save_token(@user.id, tokens[:refresh])
