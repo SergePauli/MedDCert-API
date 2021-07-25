@@ -23,9 +23,9 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     r_options = {}
     if !params[:render_options].blank?
       r_options = render_options(params[:render_options].to_unsafe_h)
-      render json: @res.to_json(r_options)
+      render json: @res.all.to_json(r_options)
     else
-      render json: @res
+      render json: @res.all
     end
   end
 
