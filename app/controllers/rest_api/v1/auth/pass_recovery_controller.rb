@@ -12,9 +12,9 @@ class RestApi::V1::Auth::PassRecoveryController < RestApi::V1::ApplicationContro
   # POST REST_API/v1/auth/pwd_renew
   # password change
   def pwd_renew
-    @user = User.find_by(activation_link: params[:activation_link])
+    @user = User.where(activation_link: params[:user][:activation_link]).first
     raise ApiError.new("Неверный код", :unprocessable_entity) unless @user
-    if @user.update(password: params[:password], password_confirmation: params[:password_confirmation])
+    if @user.update(password: params[:user][:password], password_confirmation: params[:user][:password_confirmation])
       render json: { message: "password changed" }, status: :ok
     else
       render json: { errors: @user.errors.full_messages }, status: :unprocessable_entity
