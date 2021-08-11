@@ -46,16 +46,30 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   # POST /REST_API/v1/model/:model_name/add
   def create
     @res = @model_class.create(permitted_params)
+    if permitted_params.include?(:guid)
+      Audit.create(guid: @res.guid, action: :added, table: params[:model_name], severity: :success)
+    end
   end
 
   # PUT /REST_API/v1/model/:model_name/:id
   def update
+    audits = []
+    if permitted_params.include?(:guid)
+      permitted_params.each do |field, value|
+        audits.push(Audit.new(guid: @res.guid, action: :updated, table: params[:model_name],
+                              field: field, after: value, before: @res[field], severity: :success))
+      end
+    end
     @res.update(permitted_params)
+    Audits.import audits if !audits.blank?
   end
 
   # DELETE /REST_API/v1/model/:model_name/:id
   def destroy
     @res.destroy
+    if permitted_params.include?(:guid)
+      Audit.create(guid: @res.guid, action: :removed, table: params[:model_name], severity: :success, detail: @res.to_s)
+    end
   end
 
   private
