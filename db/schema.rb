@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_07_11_055314) do
+ActiveRecord::Schema.define(version: 2021_08_11_064834) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,25 @@ ActiveRecord::Schema.define(version: 2021_07_11_055314) do
     t.index ["codeKLADR"], name: "index_addresses_on_codeKLADR"
     t.index ["parent_guid"], name: "index_addresses_on_parent_guid"
     t.index ["streetAddressLine"], name: "index_addresses_on_streetAddressLine"
+  end
+
+  create_table "audits", force: :cascade do |t|
+    t.uuid "guid"
+    t.integer "action", limit: 2
+    t.string "table", limit: 70
+    t.string "field", limit: 70
+    t.string "detail"
+    t.string "before"
+    t.string "after"
+    t.integer "severity", limit: 2
+    t.string "summary"
+    t.bigint "user_id"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["action"], name: "index_audits_on_action"
+    t.index ["guid"], name: "index_audits_on_guid"
+    t.index ["severity"], name: "index_audits_on_severity"
+    t.index ["user_id"], name: "index_audits_on_user_id"
   end
 
   create_table "authenticators", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "кто и когда подписал свидетельство", force: :cascade do |t|
