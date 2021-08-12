@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  def self.trackable?
+    return true
+  end
+
   has_secure_password
 
   belongs_to :organization
@@ -31,6 +35,6 @@ class User < ApplicationRecord
   end
 
   def self.permitted_params
-    [:id, :email, :roles, :activated, :guid]
+    [:email, :organization_id, :password, :password_confirmation, :roles, person_name_attributes: [:family, :given_1, :given_2], contacts_attributes: [:value, :use]]
   end
 end
