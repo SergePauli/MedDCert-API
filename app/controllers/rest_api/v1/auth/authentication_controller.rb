@@ -64,9 +64,11 @@ class RestApi::V1::Auth::AuthenticationController < RestApi::V1::ApplicationCont
     end
   end
 
-  # GET "REST_API/v1/auth/"
-  def index
-    render json: { "users": User.all }, status: :ok
+  # GET "REST_API/v1/auth/organizations"
+  # получаем список медорганизаций для формы регистрации
+  def get_organizations
+    # только ID и короткое наименование
+    render json: { "organizations": Organization.select(:id, :name).all }, status: :ok
   end
 
   private
