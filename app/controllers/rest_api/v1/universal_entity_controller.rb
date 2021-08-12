@@ -46,7 +46,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   # POST /REST_API/v1/model/:model_name/add
   def create
     @res = @model_class.create(permitted_params)
-    if permitted_params.include?(:guid)
+    if @model_class.trackable?
       Audit.create(guid: @res.guid, action: :added, table: params[:model_name], severity: :success)
     end
   end
@@ -54,7 +54,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   # PUT /REST_API/v1/model/:model_name/:id
   def update
     audits = []
-    if permitted_params.include?(:guid)
+    if @model_class.trackable?
       permitted_params.each do |field, value|
         audits.push(Audit.new(guid: @res.guid, action: :updated, table: params[:model_name],
                               field: field, after: value, before: @res[field], severity: :success))
@@ -67,7 +67,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   # DELETE /REST_API/v1/model/:model_name/:id
   def destroy
     @res.destroy
-    if permitted_params.include?(:guid)
+    if @model_class.trackable?
       Audit.create(guid: @res.guid, action: :removed, table: params[:model_name], severity: :success, detail: @res.to_s)
     end
   end
