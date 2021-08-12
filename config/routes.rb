@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     post "/logout", action: "logout"
     get "/activate/:link", action: "activation"
     get "/refresh", action: "refresh"
-    get "/", action: "index"
+    get "/organizations", action: "get_organizations"
   end
   # Восстановление пароля
   scope "REST_API/v1/auth", controller: "rest_api/v1/auth/pass_recovery" do
