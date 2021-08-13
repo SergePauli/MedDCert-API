@@ -39,7 +39,7 @@ module CleanAPI
     config.api_only = true
 
     # Frontend url
-    config.client_url = "http://ya.ru"
+    config.client_url = "http://localhost:3000"
     # Host name and port
     config.host = "localhost:5000"
     # Endpoint base address
