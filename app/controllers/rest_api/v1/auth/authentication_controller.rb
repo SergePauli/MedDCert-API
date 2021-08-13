@@ -23,12 +23,12 @@ class RestApi::V1::Auth::AuthenticationController < RestApi::V1::ApplicationCont
       if @user.save
         ApplicationMailer.with(email: @user.email, to: Rails.configuration.admin_mail).welcome_mail.deliver_later
         ApplicationMailer.with(email: @user.email, to: @user.email).welcome_mail.deliver_later
-        redirect_to Rails.configuration.client_url + "/messages?value=Аккаунт успешно активирован"
+        redirect_to Rails.configuration.client_url + "/message/Аккаунт успешно активирован"
       end
     elsif @user.activated
-      redirect_to Rails.configuration.client_url + "/messages?value=Ссылка была использована ранее"
+      redirect_to Rails.configuration.client_url + "/message/Ссылка была использована ранее"
     else
-      redirect_to Rails.configuration.client_url + "/messages?value=Ссылка не действительна"
+      redirect_to Rails.configuration.client_url + "/message/Ссылка не действительна"
     end
   end
 
