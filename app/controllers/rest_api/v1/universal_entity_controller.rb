@@ -38,8 +38,8 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     if params[:render_options].blank?
       render json: @res
     else
-      r_options = render_options(params[:render_options])
-      render json: @res.to_json(r_options)
+      r_options = render_options(params[:render_options].to_unsafe_h)
+      render json: @res.to_json(r_options), status: :ok
     end
   end
 
@@ -100,6 +100,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   # create options for to_json render from params
   def render_options(options)
+    puts options.to_json
     options.reduce({}) do |result, (key, option)|
       if key == "include"
         result[:include] = option.reduce([]) do |sub_result, sub_option|
@@ -117,6 +118,6 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
         result = result.merge(key.to_sym => option)
       end
       result
-    end
+    end if !options.blank?
   end
 end
