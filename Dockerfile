@@ -14,6 +14,9 @@ WORKDIR $APP_HOME
 
 # Настройка переменных окружения для production
 ENV RAILS_ENV=production
+ENV MAIL_USER=
+ENV MAIL_PASS=
+ENV NSI_TOKEN=
 
 # Проброс порта 5000
 EXPOSE 5000
