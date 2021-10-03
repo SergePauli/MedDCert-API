@@ -20,6 +20,6 @@ def run_query(identifier, page = nil, size = nil, filters = nil)
   filters.each do |filter|
     url_string += "&filters=#{filter}"
   end if !filters.blank?
-  r = RestClient.get url_string, HEADERS
+  r = RestClient::Request.execute(method: :get, url: url_string, headers: HEADERS, verify_ssl: false)
   return JSON.parse(r)
 end

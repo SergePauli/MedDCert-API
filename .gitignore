@@ -30,4 +30,13 @@
 # Ignore master key for decrypting credentials and more.
 /config/master.key
 
+# Ignore VSCODE settings
 /.vscode/*
+
+# Ignore Docker file
+/Dockerfile
+
+# Ignore db config
+/config/database.yml
+# Ignore application config
+/config/application.rb
