@@ -238,7 +238,7 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
   create_table "null_flavors", comment: "values for nullFlavor attribute", force: :cascade do |t|
     t.uuid "parent_guid", null: false, comment: "who used that null flavor"
     t.string "parent_attr", null: false, comment: "null attribute"
-    t.integer "value", limit: 2, null: false, comment: "enum value of nullFlavor 1.2.643.5.1.13.13.99.2.286"
+    t.integer "code", limit: 2, null: false, comment: "enum value of nullFlavor 1.2.643.5.1.13.13.99.2.286"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["parent_guid"], name: "index_null_flavors_on_parent_guid"
