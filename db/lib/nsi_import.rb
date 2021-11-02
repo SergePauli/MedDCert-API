@@ -38,7 +38,7 @@ def easy_import(references_list_oid, mappings, bulk_size = 1000, filters = nil)
             params = params_new if params_new
           end
           # add new object to bulk
-          if params["oid"]
+          if params["id"]
             records << @model_class.new(params)
             passed += 1
           end
