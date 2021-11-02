@@ -85,7 +85,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   def prepare_model
     model_name = get_model_name
     raise ApiError.new("Model class not present", :bad_request) if model_name.nil? || model_name.strip == ""
-    @model_class = model_name.capitalize.constantize
+    @model_class = model_name.constantize
     raise ApiError.new("Model class is not ActiveRecord", :bad_request) unless @model_class < ActiveRecord::Base
   end
 
