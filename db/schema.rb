@@ -33,11 +33,17 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.uuid "aoGUID", comment: "Идентификатор fias:AOGUID"
     t.uuid "houseGUID", comment: "Идентификатор fias:HOUSEGUID"
     t.string "postalCode", limit: 6, comment: "Почтовый код"
-    t.string "codeKLADR", limit: 25, comment: "код КЛАДР адресного объекта"
+    t.string "code", limit: 25, comment: "код КЛАДР адресного объекта"
     t.uuid "parent_guid", null: false, comment: "Идентификатор родительского элемента"
+    t.boolean "actual", comment: "Признак актуальности адреса"
+    t.string "house_number", comment: "Номер дома"
+    t.string "struct_number", comment: "Строение"
+    t.string "building_number", comment: "Корпус"
+    t.string "flat_number", comment: "Квартира, помещение, офис"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["codeKLADR"], name: "index_addresses_on_codeKLADR"
+    t.index ["actual"], name: "index_addresses_on_actual"
+    t.index ["code"], name: "index_addresses_on_code"
     t.index ["parent_guid"], name: "index_addresses_on_parent_guid"
     t.index ["streetAddressLine"], name: "index_addresses_on_streetAddressLine"
   end
@@ -173,17 +179,15 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
   end
 
   create_table "doctors", force: :cascade do |t|
-    t.bigint "person_name_id", null: false, comment: "ФИО"
-    t.string "SNILS", comment: "номер СНИЛС"
+    t.uuid "person_id", comment: "person ID"
     t.bigint "organization_id", comment: "Медорганизаия"
     t.bigint "position_id", comment: "должность"
-    t.bigint "address_id", comment: "домашний адрес"
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["SNILS"], name: "index_doctors_on_SNILS"
-    t.index ["address_id"], name: "index_doctors_on_address_id"
+    t.index ["guid"], name: "index_doctors_on_guid"
     t.index ["organization_id"], name: "index_doctors_on_organization_id"
-    t.index ["person_name_id"], name: "index_doctors_on_person_name_id"
+    t.index ["person_id"], name: "index_doctors_on_person_id"
     t.index ["position_id"], name: "index_doctors_on_position_id"
   end
 
