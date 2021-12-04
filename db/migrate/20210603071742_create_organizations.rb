@@ -1,5 +1,5 @@
 class CreateOrganizations < ActiveRecord::Migration[6.1]
-  def change
+  def up
     create_table :organizations do |t|
       t.string :oid, index: true, null: false
       t.string :okpo, comment: "код ОКПО"
@@ -19,5 +19,9 @@ class CreateOrganizations < ActiveRecord::Migration[6.1]
       t.integer :organization_type, limit: 1
       t.uuid :guid, index: true, null: false
     end
+  end
+
+  def down
+    drop_table :organizations
   end
 end
