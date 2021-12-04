@@ -11,7 +11,7 @@ TOO_BIG_BULK_SIZE = 10000
 
 puts "Загружаем медорганизации"
 mappings = { "id" => "id", "oid" => "oid", "oldOid" => "old_oid", "nameFull" => "name_full", "nameShort" => "name", "parentId" => "parent_id", "deleteDate" => "delete_date", "deleteReason" => "delete_reason", "createDate" => "create_date", "modifyDate" => "modify_date", "organizationType" => "organization_type" }
-address_mappings = { "addrRegionId" => "state", "aoidStreet" => "aoGUID", "houseid" => "houseGUID", "postIndex" => "postalCode" }
+address_mappings = { "addrRegionId" => "state", "aoidStreet" => "aoGUID", "houseid" => "houseGUID", "postIndex" => "postalCode", "building" => "building_number", "struct" => "struct_number", "house" => "house_number" }
 # with childs address records
 addresses = []
 easy_import("1.2.643.5.1.13.13.11.1461", mappings, nil, ["regionId|#{Rails.configuration.region}|EXACT"]) do |record, params|
@@ -26,6 +26,7 @@ easy_import("1.2.643.5.1.13.13.11.1461", mappings, nil, ["regionId|#{Rails.confi
     one_line_string += " стр. #{column["value"]}" if !column["value"].blank? && column["column"] == "struct"
   }
   address_params = address_params.merge(streetAddressLine: one_line_string) if !one_line_string.blank?
+  address_params = address_params.merge(actual: true)
   guid = SecureRandom.uuid
   address_params = address_params.merge(parent_guid: guid)
   addresses << Address.new(address_params) if address_params["state"] && address_params[:streetAddressLine]
