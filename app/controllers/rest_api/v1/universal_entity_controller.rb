@@ -3,7 +3,6 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   before_action :authenticate_request
   before_action :prepare_model, only: [:index, :show, :create, :update, :destroy]
   before_action :find_record, only: [:show, :update, :destroy]
-  after_action :action_result, only: [:create, :update, :destroy]
 
   # POST /REST_API/v1/model/:model_name
   # avaible options:
@@ -29,12 +28,13 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     end
   end
 
-  # POST /REST_API/v1/model/:model_name/:id
+  # POST /REST_API/v1/show/model/:model_name/:id
   # avaible options:
   #  :select for selection attributes of model,
   #  :render_options for to_json method
   def show
     @res = @model_class.select(params[:select]) unless params[:select].blank?
+    r_options = {}
     if params[:render_options].blank?
       render json: @res
     else
@@ -45,9 +45,22 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   # POST /REST_API/v1/model/:model_name/add
   def create
-    @res = @model_class.create(permitted_params)
-    if @model_class.trackable?
-      Audit.create(guid: @res.guid, action: :added, table: params[:model_name], severity: :success)
+    @res = @model_class.new permitted_params
+    if @res.save
+      if @model_class.trackable?
+        @res_a = Audit.new(guid: @res.guid, action: :added, table: params[:model_name],
+                           severity: :success, user_id: @current_user[:data][:id], detail: @res.to_s)
+        @res_a.save!
+      end
+      r_options = {}
+      if params[:render_options].blank?
+        render json: @res
+      else
+        r_options = render_options(params[:render_options].to_unsafe_h)
+        render json: @res.to_json(r_options), status: :ok
+      end
+    else
+      render json: { errors: @res.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -57,18 +70,32 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     if @model_class.trackable?
       permitted_params.each do |field, value|
         audits.push(Audit.new(guid: @res.guid, action: :updated, table: params[:model_name],
-                              field: field, after: value, before: @res[field], severity: :success))
+                              field: field, after: value, before: @res[field], severity: :success, user_id: @current_user[:data][:id])) if @res[field] != value
       end
     end
-    @res.update(permitted_params)
-    Audits.import audits if !audits.blank?
+    if @res.update(permitted_params)
+      Audit.import audits if !audits.blank?
+      r_options = {}
+      if params[:render_options].blank?
+        render json: @res
+      else
+        r_options = render_options(params[:render_options].to_unsafe_h)
+        render json: @res.to_json(r_options), status: :ok
+      end
+    else
+      render json: { errors: @res.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   # DELETE /REST_API/v1/model/:model_name/:id
   def destroy
-    @res.destroy
-    if @model_class.trackable?
-      Audit.create(guid: @res.guid, action: :removed, table: params[:model_name], severity: :success, detail: @res.to_s)
+    if @res.destroy
+      if @model_class.trackable?
+        Audit.create(guid: @res.guid, action: :removed, table: params[:model_name], severity: :success, detail: @res.to_s, user_id: @current_user[:data][:id])
+      end
+      render json: @res
+    else
+      render json: { errors: @res.errors.full_messages }, status: :unprocessable_entity
     end
   end
 
@@ -93,14 +120,8 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @model_class.find(params[@model_class.primary_key.to_sym])
   end
 
-  def action_result
-    raise ApiError.new(@res.errors[:base].to_s, :bad_request) unless @res.errors[:base].empty?
-    render json: @res
-  end
-
   # create options for to_json render from params
   def render_options(options)
-    puts options.to_json
     options.reduce({}) do |result, (key, option)|
       if key == "include"
         result[:include] = option.reduce([]) do |sub_result, sub_option|
