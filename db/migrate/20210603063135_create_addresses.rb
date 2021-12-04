@@ -6,17 +6,22 @@ class CreateAddresses < ActiveRecord::Migration[6.1]
       t.uuid :aoGUID, comment: "Идентификатор fias:AOGUID"
       t.uuid :houseGUID, comment: "Идентификатор fias:HOUSEGUID"
       t.string :postalCode, limit: 6, comment: "Почтовый код"
-      t.string :codeKLADR, limit: 25, comment: "код КЛАДР адресного объекта"
+      t.string :code, limit: 25, comment: "код КЛАДР адресного объекта"
       t.uuid :parent_guid, index: true, null: false, comment: "Идентификатор родительского элемента"
+      t.boolean :actual, index: true, comment: "Признак актуальности адреса"
+      t.string :house_number, comment: "Номер дома"
+      t.string :struct_number, comment: "Строение"
+      t.string :building_number, comment: "Корпус"
+      t.string :flat_number, comment: "Квартира, помещение, офис"
       t.timestamps
     end
     add_index :addresses, :streetAddressLine
-    add_index :addresses, :codeKLADR
+    add_index :addresses, :code
   end
 
   def down
     remove_index :addresses, :streetAddressLine
-    remove_index :addresses, :codeKLADR
+    remove_index :addresses, :code
     drop_table :addresses
   end
 end
