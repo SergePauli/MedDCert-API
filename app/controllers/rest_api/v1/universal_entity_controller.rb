@@ -67,13 +67,13 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   # PUT /REST_API/v1/model/:model_name/:id
   def update
     audits = []
-    if @model_class.trackable?
-      permitted_params.each do |field, value|
-        audits.push(Audit.new(guid: @res.guid, action: :updated, table: params[:model_name],
-                              field: field, after: value, before: @res[field], severity: :success, user_id: @current_user[:data][:id])) if @res[field] != value
+    if @model_class.trackable? && !params[:audits].blank?
+      params[:audits].each do |audit|
+        audits.push(Audit.new(guid: @res.guid, action: :updated, table: params[:model_name], field: audit[:field], after: audit[:after], before: audit[:before], severity: :success, detail: audit[:detail], user_id: @current_user[:data][:id]))
       end
     end
-    if @res.update(permitted_params)
+    res = @res.update(permitted_params)
+    if res && @res.save
       Audit.import audits if !audits.blank?
       r_options = {}
       if params[:render_options].blank?
