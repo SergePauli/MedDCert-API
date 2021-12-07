@@ -4,7 +4,7 @@ class PersonRecord < ActiveRecord::Base
 
   belongs_to :person_name
 
-  accepts_nested_attributes_for :person_name, reject_if: ->(attributes) { attributes["family"].blank? || attributes["given_1"].blank? }
+  accepts_nested_attributes_for :person_name
 
   def name
     "#{person_name.family} #{person_name.given_1} #{person_name.given_2}"
