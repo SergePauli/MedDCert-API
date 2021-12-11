@@ -1,4 +1,7 @@
 class Audit < ApplicationRecord
+  belongs_to :user
+  has_one :organization, through: :user
+
   enum action: [:added, :updated, :removed, :archived,
                 :commented, :imported, :exported, :signed_in, :signed_out]
   enum severity: [:success, :info, :warning, :error]
