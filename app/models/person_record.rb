@@ -7,14 +7,17 @@ class PersonRecord < ActiveRecord::Base
   accepts_nested_attributes_for :person_name
 
   def name
-    "#{person_name.family} #{person_name.given_1} #{person_name.given_2}"
+    "#{person_name.family} #{person_name.given_1} #{person_name.given_2}".strip
+  end
+
+  def initials
+    "#{person_name.family} #{person_name.given_1[0, 1]} #{person_name.given_2[0, 1]}".strip
   end
 
   after_initialize do |person|
     if person.person_name.id == nil && person.person_name
       exist_person_name = PersonName.where(family: person.person_name.family).where(given_1: person.person_name.given_1).where(given_2: person.person_name.given_2)
       person.person_name = exist_person_name.first if exist_person_name && exist_person_name.first
-      puts "after_initialize", person.person_name.id
     end
   end
 
