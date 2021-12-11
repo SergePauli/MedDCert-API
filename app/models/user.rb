@@ -12,6 +12,10 @@ class User < PersonRecord
     organization.name || organization.name_full
   end
 
+  def to_s
+    "Пользователь[#{id}] #{email} #{initials}"
+  end
+
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   validates :email, presence: true
