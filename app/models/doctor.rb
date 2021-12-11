@@ -30,7 +30,7 @@ class Doctor < ActiveRecord::Base
   end
 
   def to_s
-    "Врач id #{id} #{person.SNILS} #{person.name} #{position.name}"
+    "Врач[#{id}] #{person.SNILS} #{person.initials} #{position.name}"
   end
 
   # For using in UniversalEnttityController or other models
