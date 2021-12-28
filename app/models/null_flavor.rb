@@ -9,6 +9,6 @@ class NullFlavor < ApplicationRecord
   # Для использования в универсальном контроллере сущностей
   # и в других моделях
   def self.permitted_params
-    [:id, :parent_guid, :parent_attr, :code]
+    [:id, :parent_guid, :parent_attr, :code, :_destroy]
   end
 end
