@@ -1,5 +1,5 @@
 class CreateCertificates < ActiveRecord::Migration[6.1]
-  def change
+  def up
     create_table :certificates, comment: "таблица свидетельств" do |t|
       t.date :eff_time, null: false, comment: "дата создания документа"
       t.belongs_to :patient, index: true, comment: "id данных умершего"
@@ -18,9 +18,8 @@ class CreateCertificates < ActiveRecord::Migration[6.1]
       t.integer :death_year, limit: 2, comment: "год смерти - если неизвестен месяц"
       t.integer :death_month, limit: 1, comment: "месяц смерти - если неизвестен день"
       t.integer :death_day, limit: 2, comment: "день смерти - если неизвестно время"
-      t.uuid :life_addr, index: true, comment: "место жительства"
       t.integer :life_area_type, limit: 1, comment: "enum тип местности проживания 1.2.643.5.1.13.13.11.1042"
-      t.uuid :death_addr, index: true, comment: "место смерти"
+      t.uuid :death_addr_id, index: true, comment: "место смерти"
       t.integer :death_area_type, index: true, limit: 1, comment: "enum тип местности смерти 1.2.643.5.1.13.13.11.1042"
       t.integer :death_place, index: true, limit: 1, comment: "enum смерть наступила 1.2.643.5.1.13.13.99.2.20"
       t.integer :marital_status, index: true, limit: 1, comment: "enum семейное положение 1.2.643.5.1.13.13.99.2.15"
@@ -40,5 +39,9 @@ class CreateCertificates < ActiveRecord::Migration[6.1]
       t.uuid :guid, index: true, null: false, default: -> { "gen_random_uuid()" }, unique: true
       t.timestamps
     end
+  end
+
+  def down
+    drop_table :certificates
   end
 end
