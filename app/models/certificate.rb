@@ -5,39 +5,56 @@ class Certificate < ApplicationRecord
     true
   end
 
+  def self.cert_types
+    ["не определенное", "окончательное", "предварительное",
+     "взамен предварительного", "взамен окончательного"]
+  end
+
+  after_initialize do |cert|
+    # Check if certificate is new
+    if cert.number.blank?
+      prevNumber = Certificate.where(cert_type: cert.cert_type).maximum(:number)
+      cert.number = prevNumber === nil ? "#{cert.cert_type}00000001" : (prevNumber.to_i + 1).to_s
+    end
+  end
+
   #-------------------------Связи-------------------------------------------
 
   # Связь с записью пациента
-  belongs_to :patient, primary_key: "id", foreign_key: "patient_id", autosave: true, dependent: :destroy
+  has_one :patient, primary_key: "patient_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :patient
   # Связь с записью данных подписи заполнившего свидетельство
-  belongs_to :author, primary_key: "id", autosave: true, dependent: :destroy
+  has_one :author, primary_key: "author_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :author, allow_destroy: true
   # Связь с записью данных подписи гл.врача
-  belongs_to :legal_authenticator, primary_key: "id", autosave: true, dependent: :destroy
+  has_one :legal_authenticator, primary_key: "legal_authenticator_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :legal_authenticator, allow_destroy: true
   # Связь с записью данных подписи заверившего свидетельство
-  belongs_to :authenticator, primary_key: "id", autosave: true, dependent: :destroy
+  has_one :authenticator, primary_key: "authenticator_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :authenticator, allow_destroy: true
   # Связь с записью данных медорганизации
-  belongs_to :custodian, primary_key: "id"
-  # Связь с записью адреса места смерти
-  belongs_to :death_addr, primary_key: "id", foreign_key: "death_addr_id", autosave: true, dependent: :destroy
-  accepts_nested_attributes_for :death_addr, allow_destroy: true
+  belongs_to :custodian, class_name: "Organization", foreign_key: "custodian_id"
   # Связь с записью данных причины а)
-  belongs_to :a_reason, autosave: true, dependent: :destroy
+  has_one :a_reason, primary_key: "a_reason_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :a_reason, allow_destroy: true
   # Связь с записью данных причины б)
-  belongs_to :b_reason, autosave: true, dependent: :destroy
+  has_one :b_reason, primary_key: "b_reason_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :b_reason, allow_destroy: true
   # Связь с записью данных причины в)
-  belongs_to :c_reason, autosave: true, dependent: :destroy
+  has_one :c_reason, primary_key: "c_reason_id", foreign_key: "id", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :c_reason, allow_destroy: true
   # Связь с записью данных внешней причины г)
-  belongs_to :d_reason, class_name: "ExternalReason", autosave: true, dependent: :destroy
+  has_one :d_reason, primary_key: "d_reason_id", foreign_key: "id", class_name: "ExternalReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :d_reason, allow_destroy: true
 
+  # Связь с записью более нового свидетельства
+  has_one :latest_one, primary_key: "number", class_name: "Certificate", foreign_key: "number_prev"
+
   # ----дочерние записи--------
+
+  # Связь с записью адреса места смерти
+  has_one :death_addr, primary_key: "guid", class_name: "Address", foreign_key: "parent_guid", autosave: true, dependent: :destroy
+  accepts_nested_attributes_for :death_addr, allow_destroy: true
 
   # Заполнители причин отсутствия
   has_many :null_flavors, class_name: "NullFlavor", primary_key: "guid", foreign_key: "parent_guid", dependent: :destroy
@@ -52,13 +69,13 @@ class Certificate < ApplicationRecord
   accepts_nested_attributes_for :death_reasons, allow_destroy: true
 
   def to_s
-    "Свидетельство[#{id}] #{series}_#{number} #{patient.person.name}"
+    "Свидетельство[#{id}] СЕРИЯ #{series} № #{number} от #{eff_time.strftime("%d.%m.%Y")} #{Certificate.cert_types[cert_type]} на #{patient.person.name}"
   end
 
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
-    [:id, :guid, :eff_time, :cert_type, :policy_OMS, :lifeAreaType, :deathAreaType,
+    [:id, :guid, :series, :eff_time, :cert_type, :policy_OMS, :death_area_type, :life_area_type,
      :death_datetime, :death_year, :death_place, :marital_status, :education_level,
      :social_status, :death_kind, :ext_reason_time, :ext_reason_description,
      :established_medic, :basis_determining, :reason_ACME, :pregnancy_connection,
