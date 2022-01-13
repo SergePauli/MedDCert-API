@@ -9,7 +9,7 @@ class CreateUsers < ActiveRecord::Migration[6.1]
       t.string :roles, null: false, default: "USER"
       t.boolean :activated, null: false, default: false
       t.uuid :guid, null: false, default: -> { "gen_random_uuid()" }
-
+      t.integer :user_num, default: 0
       t.timestamps
     end
   end

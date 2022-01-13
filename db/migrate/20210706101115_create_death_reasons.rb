@@ -4,6 +4,7 @@ class CreateDeathReasons < ActiveRecord::Migration[6.1]
       t.belongs_to :certificate, null: false, comment: "ссылка на свидетельство"
       t.belongs_to :diagnosis, null: false, comment: "код мкб-10"
       t.datetime :effective_time, comment: "период времени"
+      t.uuid :guid, index: true, null: false, default: -> { "gen_random_uuid()" }, unique: true
       t.timestamps
     end
   end

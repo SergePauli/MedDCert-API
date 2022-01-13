@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_08_11_064834) do
+ActiveRecord::Schema.define(version: 2022_01_12_015133) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,14 +89,12 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.integer "cert_type", limit: 2, null: false, comment: "enum типа свидетельста 1.2.643.5.1.13.13.99.2.19"
     t.string "series_prev", comment: "серия замененного свидетельства"
     t.string "number_prev", comment: "номер замененного свидетельства"
-    t.date "eff_time_prev", null: false, comment: "дата создания документа"
+    t.date "eff_time_prev", comment: "дата создания замененного свидетельства"
     t.datetime "death_datetime", comment: "дата и время смерти"
     t.integer "death_year", limit: 2, comment: "год смерти - если неизвестен месяц"
     t.integer "death_month", limit: 2, comment: "месяц смерти - если неизвестен день"
     t.integer "death_day", limit: 2, comment: "день смерти - если неизвестно время"
-    t.uuid "life_addr", comment: "место жительства"
     t.integer "life_area_type", limit: 2, comment: "enum тип местности проживания 1.2.643.5.1.13.13.11.1042"
-    t.uuid "death_addr", comment: "место смерти"
     t.integer "death_area_type", limit: 2, comment: "enum тип местности смерти 1.2.643.5.1.13.13.11.1042"
     t.integer "death_place", limit: 2, comment: "enum смерть наступила 1.2.643.5.1.13.13.99.2.20"
     t.integer "marital_status", limit: 2, comment: "enum семейное положение 1.2.643.5.1.13.13.99.2.15"
@@ -105,8 +103,8 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.string "policy_OMS", comment: "полис ОМС умершего или представителя"
     t.integer "death_kind", limit: 2, comment: "enum род смерти 1.2.643.5.1.13.13.99.2.21"
     t.datetime "ext_reason_time", comment: "время смерти от внешних причин"
-    t.integer "established_medic", limit: 2, null: false, comment: "enum кто установил причину 1.2.643.5.1.13.13.99.2.22"
-    t.integer "basis_determining", limit: 2, null: false, comment: "enum основание для уст. причины 1.2.643.5.1.13.13.99.2.23"
+    t.integer "established_medic", limit: 2, comment: "enum кто установил причину 1.2.643.5.1.13.13.99.2.22"
+    t.integer "basis_determining", limit: 2, comment: "enum основание для уст. причины 1.2.643.5.1.13.13.99.2.23"
     t.bigint "a_reason_id", comment: "а) Болезнь или состояние, напосредственно приведшее к смерти"
     t.bigint "b_reason_id", comment: "б) Патологическое состояние, которое привело к возникновению вышеуказанной причины"
     t.bigint "c_reason_id", comment: "в) первоначальная причина смерти"
@@ -123,14 +121,12 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.index ["c_reason_id"], name: "index_certificates_on_c_reason_id"
     t.index ["custodian_id"], name: "index_certificates_on_custodian_id"
     t.index ["d_reason_id"], name: "index_certificates_on_d_reason_id"
-    t.index ["death_addr"], name: "index_certificates_on_death_addr"
     t.index ["death_area_type"], name: "index_certificates_on_death_area_type"
     t.index ["death_kind"], name: "index_certificates_on_death_kind"
     t.index ["death_place"], name: "index_certificates_on_death_place"
     t.index ["education_level"], name: "index_certificates_on_education_level"
     t.index ["guid"], name: "index_certificates_on_guid"
     t.index ["legal_authenticator_id"], name: "index_certificates_on_legal_authenticator_id"
-    t.index ["life_addr"], name: "index_certificates_on_life_addr"
     t.index ["marital_status"], name: "index_certificates_on_marital_status"
     t.index ["number"], name: "index_certificates_on_number"
     t.index ["patient_id"], name: "index_certificates_on_patient_id"
@@ -144,9 +140,11 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.integer "term_pregnancy", limit: 2, comment: "enum степень доношенности 1.2.643.5.1.13.13.99.2.18"
     t.integer "weight", comment: "вес ребенка в граммах при рождении"
     t.integer "which_account", comment: "каким по счету рожден у матери"
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["certificate_id"], name: "index_child_infos_on_certificate_id"
+    t.index ["guid"], name: "index_child_infos_on_guid"
   end
 
   create_table "contacts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -160,14 +158,16 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.index ["telcom_value"], name: "index_contacts_on_telcom_value"
   end
 
-  create_table "death_reasons", id: :string, comment: "Причины смерти", force: :cascade do |t|
+  create_table "death_reasons", comment: "Причины смерти", force: :cascade do |t|
     t.bigint "certificate_id", null: false, comment: "ссылка на свидетельство"
     t.bigint "diagnosis_id", null: false, comment: "код мкб-10"
     t.datetime "effective_time", comment: "период времени"
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["certificate_id"], name: "index_death_reasons_on_certificate_id"
     t.index ["diagnosis_id"], name: "index_death_reasons_on_diagnosis_id"
+    t.index ["guid"], name: "index_death_reasons_on_guid"
   end
 
   create_table "diagnoses", comment: "справочник МКБ-10", force: :cascade do |t|
@@ -199,13 +199,11 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.index ["s_name"], name: "index_ext_diagnoses_on_s_name"
   end
 
-  create_table "external_reasons", id: :string, comment: "Внешние причины смерти", force: :cascade do |t|
-    t.bigint "certificate_id", null: false, comment: "ссылка на свидетельство"
+  create_table "external_reasons", comment: "Внешние причины смерти", force: :cascade do |t|
     t.bigint "ext_diagnosis_id", null: false, comment: "код мкб-10"
     t.datetime "effective_time", comment: "период времени"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["certificate_id"], name: "index_external_reasons_on_certificate_id"
     t.index ["ext_diagnosis_id"], name: "index_external_reasons_on_ext_diagnosis_id"
   end
 
@@ -272,20 +270,17 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
 
   create_table "patients", comment: "информация об умершем", force: :cascade do |t|
     t.uuid "person_id", comment: "person ID"
-    t.uuid "identitie_id", comment: "identitie ID"
-    t.uuid "addr_id", comment: "адрес по документу"
     t.integer "addr_type", limit: 2, comment: "enum тип адреса(проживания, регистрации)"
     t.integer "gender", limit: 2, comment: "пол пациента"
     t.date "birth_date", comment: "дата рождения nullFlavor: ASKU и UNK"
     t.integer "birth_year", limit: 2, comment: "год рождения - если неизвестен месяц"
     t.integer "birth_month", limit: 2, comment: "месяц рождения - если неизвестен день"
-    t.uuid "provider_organization", comment: "Организация, констатировавшая факт смерти"
+    t.bigint "organization_id", comment: "Организация, констатировавшая факт смерти"
     t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["addr_id"], name: "index_patients_on_addr_id"
     t.index ["guid"], name: "index_patients_on_guid"
-    t.index ["identitie_id"], name: "index_patients_on_identitie_id"
+    t.index ["organization_id"], name: "index_patients_on_organization_id"
     t.index ["person_id"], name: "index_patients_on_person_id"
   end
 
@@ -314,24 +309,28 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
   end
 
   create_table "procedures", comment: "хирургические процедуры", force: :cascade do |t|
-    t.bigint "external_reason_id", null: false, comment: "ссылка на состояние способствующее смерти"
+    t.bigint "death_reason_id", null: false, comment: "ссылка на состояние способствующее смерти"
     t.bigint "medical_serv_id", null: false, comment: "код процедуры"
     t.string "text_value", comment: "своя текстовая вариация расшифровки кода"
     t.datetime "effective_time", comment: "период времени"
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["external_reason_id"], name: "index_procedures_on_external_reason_id"
+    t.index ["death_reason_id"], name: "index_procedures_on_death_reason_id"
+    t.index ["guid"], name: "index_procedures_on_guid"
     t.index ["medical_serv_id"], name: "index_procedures_on_medical_serv_id"
   end
 
-  create_table "related_subjects", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "элементы relatedSubject (данные матери ребенка до года)", force: :cascade do |t|
+  create_table "related_subjects", id: false, comment: "элементы relatedSubject (данные матери ребенка до года)", force: :cascade do |t|
+    t.bigint "certificate_id"
     t.integer "family_connection", limit: 2, default: 1, null: false, comment: "родственик (мать) 1.2.643.5.1.13.13.99.2.14"
-    t.bigint "addr_id", null: false, comment: "ссылка на адрес"
     t.bigint "person_name_id", null: false, comment: "ссылка на ФИО-обязательна"
     t.date "birthTime", comment: "дата рождения, @nullFlavor: UNK"
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["addr_id"], name: "index_related_subjects_on_addr_id"
+    t.index ["certificate_id"], name: "index_related_subjects_on_certificate_id"
+    t.index ["guid"], name: "index_related_subjects_on_guid"
     t.index ["person_name_id"], name: "index_related_subjects_on_person_name_id"
   end
 
@@ -352,6 +351,7 @@ ActiveRecord::Schema.define(version: 2021_08_11_064834) do
     t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "user_number", default: 0
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["person_name_id"], name: "index_users_on_person_name_id"
