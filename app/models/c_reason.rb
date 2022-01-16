@@ -1,0 +1,2 @@
+class CReason < DeathReason
+end
