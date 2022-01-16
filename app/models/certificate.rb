@@ -21,27 +21,27 @@ class Certificate < ApplicationRecord
   #-------------------------Связи-------------------------------------------
 
   # Связь с записью пациента
-  has_one :patient, primary_key: "patient_id", foreign_key: "id", autosave: true, dependent: :destroy
+  belongs_to :patient, primary_key: "id", foreign_key: "patient_id", autosave: true
   accepts_nested_attributes_for :patient
   # Связь с записью данных подписи заполнившего свидетельство
-  has_one :author, primary_key: "author_id", foreign_key: "id", autosave: true, dependent: :destroy
+  has_one :author, foreign_key: "certificate_id", primary_key: "id", class_name: "Author", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :author, allow_destroy: true
   # Связь с записью данных подписи гл.врача
-  has_one :legal_authenticator, primary_key: "legal_authenticator_id", foreign_key: "id", autosave: true, dependent: :destroy
+  has_one :legal_authenticator, foreign_key: "certificate_id", primary_key: "id", class_name: "LegalAuthenticator", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :legal_authenticator, allow_destroy: true
   # Связь с записью данных подписи заверившего свидетельство
-  has_one :authenticator, primary_key: "authenticator_id", foreign_key: "id", autosave: true, dependent: :destroy
+  has_one :authenticator, foreign_key: "certificate_id", primary_key: "id", class_name: "Authenticator", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :authenticator, allow_destroy: true
   # Связь с записью данных медорганизации
   belongs_to :custodian, class_name: "Organization", foreign_key: "custodian_id"
   # Связь с записью данных причины а)
-  has_one :a_reason, primary_key: "a_reason_id", foreign_key: "id", autosave: true, dependent: :destroy
+  has_one :a_reason, foreign_key: "certificate_id", primary_key: "id", class_name: "AReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :a_reason, allow_destroy: true
   # Связь с записью данных причины б)
-  has_one :b_reason, primary_key: "b_reason_id", foreign_key: "id", autosave: true, dependent: :destroy
+  has_one :b_reason, foreign_key: "certificate_id", primary_key: "id", class_name: "BReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :b_reason, allow_destroy: true
   # Связь с записью данных причины в)
-  has_one :c_reason, primary_key: "c_reason_id", foreign_key: "id", autosave: true, dependent: :destroy
+  has_one :c_reason, foreign_key: "certificate_id", primary_key: "id", class_name: "CReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :c_reason, allow_destroy: true
   # Связь с записью данных внешней причины г)
   has_one :d_reason, primary_key: "d_reason_id", foreign_key: "id", class_name: "ExternalReason", autosave: true, dependent: :destroy
