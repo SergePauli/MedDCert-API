@@ -8,7 +8,7 @@ class CreatePatients < ActiveRecord::Migration[6.1]
       t.integer :birth_year, limit: 2, comment: "год рождения - если неизвестен месяц"
       t.integer :birth_month, limit: 1, comment: "месяц рождения - если неизвестен день"
       t.belongs_to :organization, comment: "Организация, констатировавшая факт смерти"
-      t.uuid :guid, index: true, null: false, default: -> { "gen_random_uuid()" }, unique: true
+      t.uuid :guid, unique: true, null: false, default: -> { "gen_random_uuid()" }
       t.timestamps
     end
   end
