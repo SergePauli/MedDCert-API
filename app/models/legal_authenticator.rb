@@ -1,0 +1,2 @@
+class LegalAuthenticator < Authenticator
+end
