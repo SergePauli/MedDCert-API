@@ -89,10 +89,9 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   # DELETE /REST_API/v1/model/:model_name/:id
   def destroy
-    if @res.destroy
-      if @model_class.trackable?
-        Audit.create(guid: @res.guid, action: :removed, table: params[:model_name], severity: :success, detail: @res.to_s, user_id: @current_user[:data][:id])
-      end
+    @audit = Audit.new(guid: @res.guid, action: :removed, table: params[:model_name], severity: :success, detail: @res.to_s, user_id: @current_user[:data][:id]) if @model_class.trackable?
+    if @res && @res.destroy
+      @audit.save if @audit
       render json: @res
     else
       render json: { errors: @res.errors.full_messages }, status: :unprocessable_entity
@@ -117,7 +116,8 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
   end
 
   def find_record
-    @res = @model_class.find(params[@model_class.primary_key.to_sym])
+    @res = @model_class.find params[:id]
+    #raise ApiError.new("Records not found by #{params[:id]}", :unprocessable_entity) unless @res.blank?
   end
 
   # create options for to_json render from params
