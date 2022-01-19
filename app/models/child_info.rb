@@ -16,7 +16,7 @@ class ChildInfo < ApplicationRecord
   # Для использования в универсальном контроллере сущностей
   # и в других моделях
   def self.permitted_params
-    [:term_pregnancy, :weight, :which_account, :_destroy,
+    [:id, :guid, :term_pregnancy, :weight, :which_account, :_destroy,
      related_subject_attributes: RelatedSubject.permitted_params,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
