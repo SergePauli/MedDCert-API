@@ -10,6 +10,6 @@ class RelatedSubject < PersonRecord
   accepts_nested_attributes_for :null_flavors, allow_destroy: true
 
   def self.permitted_params
-    [:family_connection, :birthTime, :_destroy, null_flavors_attributes: NullFlavor.permitted_params] | PersonRecord.permitted_params
+    [:id, :guid, :family_connection, :birthTime, :_destroy, addr_attributes: Address.permitted_params, null_flavors_attributes: NullFlavor.permitted_params] | PersonRecord.permitted_params
   end
 end
