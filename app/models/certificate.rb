@@ -65,19 +65,19 @@ class Certificate < ApplicationRecord
   accepts_nested_attributes_for :child_info, allow_destroy: true
 
   # Прочие состояния и диагнозы, способствовавшие смерти
-  has_many :death_reasons, class_name: "DeathReason", primary_key: "id", foreign_key: "certificate_id", dependent: :destroy
+  has_many :death_reasons, class_name: "OtherReason", primary_key: "id", foreign_key: "certificate_id", dependent: :destroy
   accepts_nested_attributes_for :death_reasons, allow_destroy: true
 
   def to_s
-    "Свидетельство[#{id}] СЕРИЯ #{series} № #{number} от #{eff_time.strftime("%d.%m.%Y")} #{Certificate.cert_types[cert_type]} на #{patient.person.name}"
+    "Свидетельство[#{id}] СЕРИЯ #{series} № #{number} от #{!issue_date.blank? ? issue_date.strftime("%d.%m.%Y") : ""} #{Certificate.cert_types[cert_type]} на #{patient.person.name}"
   end
 
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
-    [:id, :guid, :series, :eff_time, :cert_type, :policy_OMS, :death_area_type, :life_area_type,
+    [:id, :guid, :series, :issue_date, :cert_type, :policy_OMS, :death_area_type, :life_area_type,
      :death_datetime, :death_year, :death_place, :marital_status, :education_level,
-     :social_status, :death_kind, :ext_reason_time, :ext_reason_description,
+     :social_status, :death_kind, :ext_reason_time, :ext_reason_description, :traffic_accident,
      :established_medic, :basis_determining, :reason_ACME, :pregnancy_connection,
      :custodian_id,
      a_reason_attributes: DeathReason.permitted_params,
