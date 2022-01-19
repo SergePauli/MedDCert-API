@@ -1,7 +1,7 @@
 class CreateCertificates < ActiveRecord::Migration[6.1]
   def up
     create_table :certificates, comment: "таблица свидетельств" do |t|
-      t.date :eff_time, null: false, comment: "дата создания документа"
+      t.date :issue_date, index: true, comment: "дата выдачи свидетельства"
       t.belongs_to :patient, index: true, comment: "id данных умершего"
       t.belongs_to :author, object: "Authenticator", index: true, comment: "id данных авторства"
       t.belongs_to :legal_authenticator, object: "Authenticator", comment: "id данных заверителя"
@@ -27,6 +27,7 @@ class CreateCertificates < ActiveRecord::Migration[6.1]
       t.string :policy_OMS, index: true, comment: "полис ОМС умершего или представителя"
       t.integer :death_kind, index: true, limit: 1, comment: "enum род смерти 1.2.643.5.1.13.13.99.2.21"
       t.datetime :ext_reason_time, comment: "время смерти от внешних причин"
+      t.string :ext_reason_description, comment: "Обстоятельства смерти от внешних причин"
       t.integer :established_medic, limit: 1, comment: "enum кто установил причину 1.2.643.5.1.13.13.99.2.22"
       t.integer :basis_determining, limit: 1, comment: "enum основание для уст. причины 1.2.643.5.1.13.13.99.2.23"
       t.belongs_to :a_reason, class_name: "DeathReason", optional: true,

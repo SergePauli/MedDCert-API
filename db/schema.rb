@@ -67,7 +67,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.index ["user_id"], name: "index_audits_on_user_id"
   end
 
-  create_table "authenticators", id: :uuid, default: -> { "gen_random_uuid()" }, comment: "кто и когда подписал свидетельство", force: :cascade do |t|
+  create_table "authenticators", comment: "кто и когда подписал свидетельство", force: :cascade do |t|
+    t.string "type", comment: "тип подписи"
     t.datetime "time", comment: "время подписания документа"
     t.bigint "doctor_id", comment: "Doctor ID (информация о лице, подписавшем документ)"
     t.bigint "certificate_id", comment: "ID подписанного документа"
@@ -75,10 +76,11 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["certificate_id"], name: "index_authenticators_on_certificate_id"
     t.index ["doctor_id"], name: "index_authenticators_on_doctor_id"
+    t.index ["type"], name: "index_authenticators_on_type"
   end
 
   create_table "certificates", comment: "таблица свидетельств", force: :cascade do |t|
-    t.date "eff_time", null: false, comment: "дата создания документа"
+    t.date "issue_date", comment: "дата выдачи свидетельства"
     t.bigint "patient_id", comment: "id данных умершего"
     t.bigint "author_id", comment: "id данных авторства"
     t.bigint "legal_authenticator_id", comment: "id данных заверителя"
@@ -103,6 +105,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.string "policy_OMS", comment: "полис ОМС умершего или представителя"
     t.integer "death_kind", limit: 2, comment: "enum род смерти 1.2.643.5.1.13.13.99.2.21"
     t.datetime "ext_reason_time", comment: "время смерти от внешних причин"
+    t.string "ext_reason_description", comment: "Обстоятельства смерти от внешних причин"
     t.integer "established_medic", limit: 2, comment: "enum кто установил причину 1.2.643.5.1.13.13.99.2.22"
     t.integer "basis_determining", limit: 2, comment: "enum основание для уст. причины 1.2.643.5.1.13.13.99.2.23"
     t.bigint "a_reason_id", comment: "а) Болезнь или состояние, напосредственно приведшее к смерти"
@@ -125,7 +128,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.index ["death_kind"], name: "index_certificates_on_death_kind"
     t.index ["death_place"], name: "index_certificates_on_death_place"
     t.index ["education_level"], name: "index_certificates_on_education_level"
-    t.index ["guid"], name: "index_certificates_on_guid"
+    t.index ["issue_date"], name: "index_certificates_on_issue_date"
     t.index ["legal_authenticator_id"], name: "index_certificates_on_legal_authenticator_id"
     t.index ["marital_status"], name: "index_certificates_on_marital_status"
     t.index ["number"], name: "index_certificates_on_number"
@@ -135,7 +138,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.index ["social_status"], name: "index_certificates_on_social_status"
   end
 
-  create_table "child_infos", id: false, comment: "в случае смерти ребенка", force: :cascade do |t|
+  create_table "child_infos", comment: "в случае смерти ребенка", force: :cascade do |t|
     t.bigint "certificate_id"
     t.integer "term_pregnancy", limit: 2, comment: "enum степень доношенности 1.2.643.5.1.13.13.99.2.18"
     t.integer "weight", comment: "вес ребенка в граммах при рождении"
@@ -159,7 +162,8 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
   end
 
   create_table "death_reasons", comment: "Причины смерти", force: :cascade do |t|
-    t.bigint "certificate_id", null: false, comment: "ссылка на свидетельство"
+    t.string "type", comment: "тип причины, обеспечение STI"
+    t.bigint "certificate_id", comment: "ссылка на свидетельство"
     t.bigint "diagnosis_id", null: false, comment: "код мкб-10"
     t.datetime "effective_time", comment: "период времени"
     t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
@@ -167,7 +171,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.datetime "updated_at", precision: 6, null: false
     t.index ["certificate_id"], name: "index_death_reasons_on_certificate_id"
     t.index ["diagnosis_id"], name: "index_death_reasons_on_diagnosis_id"
-    t.index ["guid"], name: "index_death_reasons_on_guid"
+    t.index ["type"], name: "index_death_reasons_on_type"
   end
 
   create_table "diagnoses", comment: "справочник МКБ-10", force: :cascade do |t|
@@ -200,10 +204,12 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
   end
 
   create_table "external_reasons", comment: "Внешние причины смерти", force: :cascade do |t|
+    t.bigint "certificate_id"
     t.bigint "ext_diagnosis_id", null: false, comment: "код мкб-10"
     t.datetime "effective_time", comment: "период времени"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["certificate_id"], name: "index_external_reasons_on_certificate_id"
     t.index ["ext_diagnosis_id"], name: "index_external_reasons_on_ext_diagnosis_id"
   end
 
@@ -279,7 +285,6 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["guid"], name: "index_patients_on_guid"
     t.index ["organization_id"], name: "index_patients_on_organization_id"
     t.index ["person_id"], name: "index_patients_on_person_id"
   end
@@ -321,7 +326,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.index ["medical_serv_id"], name: "index_procedures_on_medical_serv_id"
   end
 
-  create_table "related_subjects", id: false, comment: "элементы relatedSubject (данные матери ребенка до года)", force: :cascade do |t|
+  create_table "related_subjects", comment: "элементы relatedSubject (данные матери ребенка до года)", force: :cascade do |t|
     t.bigint "certificate_id"
     t.integer "family_connection", limit: 2, default: 1, null: false, comment: "родственик (мать) 1.2.643.5.1.13.13.99.2.14"
     t.bigint "person_name_id", null: false, comment: "ссылка на ФИО-обязательна"
