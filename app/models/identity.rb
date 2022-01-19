@@ -10,7 +10,7 @@ class Identity < ApplicationRecord
   # и в других моделях
   def self.permitted_params
     [:id, :identity_card_type_id, :series, :number, :issueOrgName, :issueOrgCode,
-     :issueDate, :_destroy,
+     :issueDate, :parent_guid, :_destroy,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
 end
