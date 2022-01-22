@@ -3,9 +3,6 @@ class CreateCertificates < ActiveRecord::Migration[6.1]
     create_table :certificates, comment: "таблица свидетельств" do |t|
       t.date :issue_date, index: true, comment: "дата выдачи свидетельства"
       t.belongs_to :patient, index: true, comment: "id данных умершего"
-      t.belongs_to :author, object: "Authenticator", index: true, comment: "id данных авторства"
-      t.belongs_to :legal_authenticator, object: "Authenticator", comment: "id данных заверителя"
-      t.belongs_to :authenticator, object: "Authenticator", comment: "id данных проверяющего"
       t.belongs_to :custodian, object: "Organization", index: true, comment: "id медорганизации"
       t.string :series, null: false, index: true, comment: "серия свидетельства"
       t.string :number, null: false, index: true, comment: "номер свидетельства"
@@ -30,14 +27,6 @@ class CreateCertificates < ActiveRecord::Migration[6.1]
       t.string :ext_reason_description, comment: "Обстоятельства смерти от внешних причин"
       t.integer :established_medic, limit: 1, comment: "enum кто установил причину 1.2.643.5.1.13.13.99.2.22"
       t.integer :basis_determining, limit: 1, comment: "enum основание для уст. причины 1.2.643.5.1.13.13.99.2.23"
-      t.belongs_to :a_reason, class_name: "DeathReason", optional: true,
-                              comment: "а) Болезнь или состояние, напосредственно приведшее к смерти"
-      t.belongs_to :b_reason, class_name: "DeathReason", optional: true,
-                              comment: "б) Патологическое состояние, которое привело к возникновению вышеуказанной причины"
-      t.belongs_to :c_reason, class_name: "DeathReason", optional: true,
-                              comment: "в) первоначальная причина смерти"
-      t.belongs_to :d_reason, class_name: "ExternalReason", optional: true,
-                              comment: "г) внешняя причина при травмах и отравлениях"
       t.integer :traffic_accident, limit: 1, commet: "Cвязь с ДТП 1.2.643.5.1.13.13.99.2.24"
       t.integer :pregnancy_connection, limit: 1, commet: "Связь беременностью 1.2.643.5.1.13.13.99.2.25 "
       t.uuid :guid, unique: true, null: false, default: -> { "gen_random_uuid()" }

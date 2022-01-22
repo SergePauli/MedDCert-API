@@ -30,8 +30,8 @@ class Certificate < ApplicationRecord
   has_one :legal_authenticator, foreign_key: "certificate_id", primary_key: "id", class_name: "LegalAuthenticator", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :legal_authenticator, allow_destroy: true
   # Связь с записью данных подписи заверившего свидетельство
-  has_one :authenticator, foreign_key: "certificate_id", primary_key: "id", class_name: "Authenticator", autosave: true, dependent: :destroy
-  accepts_nested_attributes_for :authenticator, allow_destroy: true
+  has_one :audithor, foreign_key: "certificate_id", primary_key: "id", class_name: "Audithor", autosave: true, dependent: :destroy
+  accepts_nested_attributes_for :audithor, allow_destroy: true
   # Связь с записью данных медорганизации
   belongs_to :custodian, class_name: "Organization", foreign_key: "custodian_id"
   # Связь с записью данных причины а)
@@ -44,7 +44,7 @@ class Certificate < ApplicationRecord
   has_one :c_reason, foreign_key: "certificate_id", primary_key: "id", class_name: "CReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :c_reason, allow_destroy: true
   # Связь с записью данных внешней причины г)
-  has_one :d_reason, primary_key: "d_reason_id", foreign_key: "id", class_name: "ExternalReason", autosave: true, dependent: :destroy
+  has_one :d_reason, primary_key: "id", foreign_key: "certificate_id", class_name: "ExternalReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :d_reason, allow_destroy: true
 
   # Связь с записью более нового свидетельства
@@ -87,7 +87,7 @@ class Certificate < ApplicationRecord
      death_reasons_attributes: DeathReason.permitted_params,
      child_info_attributes: ChildInfo.permitted_params,
      author_attributes: Authenticator.permitted_params,
-     authenticator_attributes: Authenticator.permitted_params,
+     audithor_attributes: Authenticator.permitted_params,
      legal_authenticator_attributes: Authenticator.permitted_params,
      death_addr_attributes: Address.permitted_params,
      patient_attributes: Patient.permitted_params,

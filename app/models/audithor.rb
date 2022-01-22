@@ -1,0 +1,2 @@
+class Audithor < Authenticator
+end
