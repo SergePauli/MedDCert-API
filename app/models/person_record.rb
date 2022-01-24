@@ -15,7 +15,7 @@ class PersonRecord < ActiveRecord::Base
   end
 
   after_initialize do |person|
-    if person.person_name.id == nil && person.person_name
+    if person.person_name && person.person_name.id == nil
       exist_person_name = PersonName.where(family: person.person_name.family).where(given_1: person.person_name.given_1).where(given_2: person.person_name.given_2)
       person.person_name = exist_person_name.first if exist_person_name && exist_person_name.first
     end
