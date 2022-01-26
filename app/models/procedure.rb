@@ -11,7 +11,7 @@ class Procedure < ApplicationRecord
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
-    [:id, :guid, :medical_serv_id, :effective_time, :_destroy,
+    [:id, :guid, :medical_serv_id, :text_value, :effective_time, :_destroy,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
 end
