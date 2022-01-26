@@ -84,7 +84,7 @@ class Certificate < ApplicationRecord
      b_reason_attributes: DeathReason.permitted_params,
      c_reason_attributes: DeathReason.permitted_params,
      d_reason_attributes: ExternalReason.permitted_params,
-     death_reasons_attributes: DeathReason.permitted_params,
+     death_reasons_attributes: OtherReason.permitted_params,
      child_info_attributes: ChildInfo.permitted_params,
      author_attributes: Authenticator.permitted_params,
      audithor_attributes: Authenticator.permitted_params,
