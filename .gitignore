@@ -40,4 +40,4 @@
 /config/database.yml
 # Ignore application config
 /config/application.rb
-db/schema.rb
+/db/schema.rb
