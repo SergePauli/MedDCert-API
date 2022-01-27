@@ -8,7 +8,8 @@ class ExternalReason < ApplicationRecord
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
-    [:id, :ext_diagnosis_id, :effective_time, :_destroy,
+    [:id, :ext_diagnosis_id, :effective_time, :years, :months,
+     :weeks, :days, :hours, :minutes, :_destroy,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
 end
