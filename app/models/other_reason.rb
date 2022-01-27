@@ -6,7 +6,6 @@ class OtherReason < DeathReason
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
-    [:id, :guid, :diagnosis_id, :effective_time, :_destroy, procedures_attributes: Procedure.permitted_params,
-                                                            null_flavors_attributes: NullFlavor.permitted_params]
+    DeathReason.permitted_params | [procedures_attributes: Procedure.permitted_params]
   end
 end
