@@ -8,6 +8,7 @@ class Doctor < ActiveRecord::Base
   belongs_to :position
   belongs_to :organization
   belongs_to :person, primary_key: "id", foreign_key: "person_id"
+  has_one :person_name, through: :person
 
   has_many :null_flavors, class_name: "NullFlavor", primary_key: "guid", foreign_key: "parent_guid"
 
