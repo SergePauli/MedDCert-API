@@ -69,7 +69,7 @@ class Certificate < ApplicationRecord
   accepts_nested_attributes_for :death_reasons, allow_destroy: true
 
   def to_s
-    "Свидетельство[#{id}] СЕРИЯ #{series} № #{number} от #{!issue_date.blank? ? issue_date.strftime("%d.%m.%Y") : ""} #{Certificate.cert_types[cert_type]} на #{patient.person.name}"
+    "Свидетельство[#{id}] СЕРИЯ #{series} № #{number} #{!issue_date.blank? ? "от " + issue_date.strftime("%d.%m.%Y") : ""} #{Certificate.cert_types[cert_type]} на #{patient.person ? patient.person.name : "неидентифицированого"}"
   end
 
   # For using in UniversalEnttityController or other models
