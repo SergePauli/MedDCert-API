@@ -14,6 +14,6 @@ class Organization < ApplicationRecord
   end
 
   def self.permitted_params
-    [:id, :guid, :name, :name_full, :license, :license_data, :okpo, contacts_attributes: Contact.permitted_params, address_attributes: Address.permitted_params]
+    [:id, :guid, :name, :name_full, :license, :license_data, :okpo, :sm_code, contacts_attributes: Contact.permitted_params, address_attributes: Address.permitted_params]
   end
 end

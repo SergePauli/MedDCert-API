@@ -12,9 +12,11 @@ class Certificate < ApplicationRecord
 
   after_initialize do |cert|
     # Check if certificate is new
-    if cert.number.blank?
-      prevNumber = Certificate.where(cert_type: cert.cert_type).maximum(:number)
-      cert.number = prevNumber === nil ? "#{cert.cert_type}00000001" : (prevNumber.to_i + 1).to_s
+    if cert.number&.length === 2
+      minNumber = "1#{Date.today.to_s[2..3]}#{cert.number}0000"
+      maxNumber = "1#{Date.today.to_s[2..3]}#{cert.number}9999"
+      prevNumber = Certificate.where("number > ?", minNumber).where("number < ?", maxNumber).maximum(:number)
+      cert.number = prevNumber === nil ? "1#{Date.today.to_s[2..3]}#{cert.number}0001" : (prevNumber.to_i + 1).to_s
     end
   end
 
@@ -47,6 +49,9 @@ class Certificate < ApplicationRecord
   has_one :d_reason, primary_key: "id", foreign_key: "certificate_id", class_name: "ExternalReason", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :d_reason, allow_destroy: true
 
+  has_one :participant, primary_key: "id", foreign_key: "certificate_id", autosave: true, dependent: :destroy
+  accepts_nested_attributes_for :participant
+
   # Связь с записью более нового свидетельства
   has_one :latest_one, primary_key: "number", class_name: "Certificate", foreign_key: "number_prev"
 
@@ -75,7 +80,7 @@ class Certificate < ApplicationRecord
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
-    [:id, :guid, :series, :issue_date, :cert_type, :policy_OMS, :death_area_type, :life_area_type,
+    [:id, :guid, :number, :series, :issue_date, :cert_type, :policy_OMS, :death_area_type, :life_area_type,
      :death_datetime, :death_year, :death_place, :marital_status, :education_level,
      :social_status, :death_kind, :ext_reason_time, :ext_reason_description, :traffic_accident,
      :established_medic, :basis_determining, :reason_ACME, :pregnancy_connection,
