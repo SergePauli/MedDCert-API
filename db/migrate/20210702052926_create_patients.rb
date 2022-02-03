@@ -1,7 +1,7 @@
 class CreatePatients < ActiveRecord::Migration[6.1]
   def up
     create_table :patients, comment: "информация об умершем" do |t|
-      t.uuid :person_id, index: true, comment: "person ID"
+      t.uuid :person_id, index: true, comment: "ID Персональных данных"
       t.integer :addr_type, limit: 1, comment: "enum тип адреса(проживания, регистрации)"
       t.integer :gender, limit: 1, comment: "пол пациента"
       t.date :birth_date, comment: "дата рождения nullFlavor: ASKU и UNK"
