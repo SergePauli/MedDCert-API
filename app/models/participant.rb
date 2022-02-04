@@ -1,6 +1,6 @@
 class Participant < ApplicationRecord
   # Связь с записью ДУЛ
-  has_one :identity, primary_key: "guid", class_name: "Identity", foreign_key: "parent_guid", autosave: true, dependent: :destroy
+  has_one :identity, primary_key: "person_id", class_name: "Identity", foreign_key: "parent_guid", autosave: true, dependent: :destroy
   accepts_nested_attributes_for :identity, allow_destroy: true
   # Связь с записью персональных данных
   belongs_to :person, autosave: true
