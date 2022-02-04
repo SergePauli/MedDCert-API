@@ -96,6 +96,7 @@ class Certificate < ApplicationRecord
      legal_authenticator_attributes: Authenticator.permitted_params,
      death_addr_attributes: Address.permitted_params,
      patient_attributes: Patient.permitted_params,
+     participant_attributes: Participant.permitted_params,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
 end
