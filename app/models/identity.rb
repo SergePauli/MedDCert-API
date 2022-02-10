@@ -5,6 +5,14 @@ class Identity < ApplicationRecord
   has_many :null_flavors, class_name: "NullFlavor", primary_key: "id", foreign_key: "parent_guid", dependent: :destroy
   accepts_nested_attributes_for :null_flavors, allow_destroy: true
 
+  # формирует строковое представление для печати
+  def identity_text
+    result = identity_card_type.name
+    result += " " + series if series
+    result += " " + number if number
+    result += " " + issueOrgName if issueOrgName
+  end
+
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   # и в других моделях
