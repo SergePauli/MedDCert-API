@@ -25,4 +25,9 @@ Rails.application.routes.draw do
   scope "REST_API/v1/show/model/:model_name", controller: "rest_api/v1/universal_entity" do
     post "/:id", action: "show"
   end
+  scope "/REST_API/v1/print", controller: "rest_api/v1/print" do
+    get "/", action: "index"
+    get "/face/:id", action: "face"
+    get "/back/:id", action: "back"
+  end
 end
