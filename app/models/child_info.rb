@@ -1,6 +1,10 @@
 class ChildInfo < ApplicationRecord
   # ----дочерние записи--------
 
+  # Связь с записью места рождения
+  has_one :address, primary_key: "guid", class_name: "Address", foreign_key: "parent_guid", autosave: true, dependent: :destroy
+  accepts_nested_attributes_for :address, allow_destroy: true
+
   # Заполнители причин отсутствия
   has_many :null_flavors, class_name: "NullFlavor", primary_key: "guid", foreign_key: "parent_guid", dependent: :destroy
   accepts_nested_attributes_for :null_flavors, allow_destroy: true
@@ -18,6 +22,7 @@ class ChildInfo < ApplicationRecord
   def self.permitted_params
     [:id, :guid, :term_pregnancy, :weight, :which_account, :_destroy,
      related_subject_attributes: RelatedSubject.permitted_params,
+     address_attributes: Address.permitted_params,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
 end
