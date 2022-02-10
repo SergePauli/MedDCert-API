@@ -5,6 +5,15 @@ class ExternalReason < ApplicationRecord
   has_many :null_flavors, class_name: "NullFlavor", primary_key: "guid", foreign_key: "parent_guid", dependent: :destroy
   accepts_nested_attributes_for :null_flavors, allow_destroy: true
 
+  def diagnosis
+    ext_diagnosis
+  end
+
+  # Унифицированый вывод расшифровки кода МКБ10 для всех причин
+  def diagnosis_name
+    ext_diagnosis.s_name
+  end
+
   # For using in UniversalEnttityController or other models
   # Для использования в универсальном контроллере сущностей
   def self.permitted_params
