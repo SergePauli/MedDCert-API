@@ -6,7 +6,7 @@ class CreateIdentities < ActiveRecord::Migration[6.1]
       t.string :number, :limit => 50, comment: "номер документа"
       t.string :issueOrgName, comment: "кем выдан документ"
       t.string :issueOrgCode, :limit => 50, comment: "код подразделения"
-      t.string :issueDate, comment: "дата выдачи"
+      t.date :issueDate, comment: "дата выдачи"
       t.uuid :parent_guid, comment: "ID родительского элемента"
       t.timestamps
     end
