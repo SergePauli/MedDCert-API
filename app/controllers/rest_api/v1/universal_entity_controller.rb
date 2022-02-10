@@ -117,7 +117,6 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
 
   def find_record
     @res = @model_class.find params[:id]
-    #raise ApiError.new("Records not found by #{params[:id]}", :unprocessable_entity) unless @res.blank?
   end
 
   # create options for to_json render from params
