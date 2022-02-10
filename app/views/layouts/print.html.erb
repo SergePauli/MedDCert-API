@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style>
+     .prChsOpt {
+        font-size: small; 
+        font-stretch: condensed
+      }
+      .print {
+        border: black;   
+        border-collapse: collapse;
+        font-size:10pt;
+        border-spacing: 0 !important;
+        width: 800px;
+        padding: 0.1em 0;
+        font-family: "Times New Roman Cyr", Times, serif; 
+        line-height: 1.3; 
+        margin-left: 3em      
+      }
+
+      .print > ol > li > table {
+        border: black;   
+        border-collapse: collapse;
+        border-spacing: 0;
+      }
+      .print > ol > li > table > tbody > tr > td.border-right {        
+        border-right-style: solid;
+        border-right-width: thin; 
+      }     
+      
+      .print .td_index {
+        border: black;
+        border-style: solid;
+        border-width: thin;        
+        font-weight: bold;
+        text-align: center;
+        padding: 0px 2px;
+      }
+      .print > span.index, .print .left > span.index, .print .center > span.index, .print li > span.index{
+        border: black;
+        border-style: solid;
+        border-width: thin;
+        font-size: small;
+        font-weight: bold;
+        text-align: center;
+        width: 1.6em;
+        padding: 0px 4px;
+      }
+      .print .left {  
+        text-align: left;            
+      }
+      .print .center {   
+        text-align: center;           
+      }
+      .print > b {
+        font-size:10pt;
+      } 
+      .print b > span.value, .print .center> span.value, .print .left> span.value, .print li> span.value {
+        border-bottom-style: solid;
+        border-width: thin;
+        font-size: small;
+        text-align: center;        
+        padding: 0px 6px;
+        font-style: italic;
+        font-weight: bold;
+        display: inline-block;
+        min-width: 20px;        
+      }
+      .value-long {
+        min-width: 60px !important;
+      }
+      .sign {
+        text-align: left !important;
+        min-width: 80px !important;
+      }
+      .print .right {          
+        text-align: right;        
+      }
+      .print .center > span.selected, .print .left > span.selected, .print li > span.selected {
+        border-bottom-style: solid;
+        padding: 0px 4px;
+      }
+      .print .title {
+        border: thin gray;
+        border-style: double;
+        padding: 0.4em 0.1em 0.1em 0.4em;
+      }
+      .print > ol {        
+        padding-bottom: 8px;
+        border-bottom-style: dashed; 
+        border-bottom-width: thin;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <%= yield %>
+  </body>
+</html>

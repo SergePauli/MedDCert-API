@@ -1,0 +1,5 @@
+Смерть наступила: <% ["на месте происшествия", "в машине скорой помощи", "в стационаре",
+                                    "дома", "в образовательной организации", "в другом месте"].each_with_index do |name, index| %>
+          <%= render partial: "print/optionPrint",
+                     locals: { selected: death_place === (index === 5 ? index + 2 : index + 1), option: name, idx: index + 1 } %>    
+         <% end %>

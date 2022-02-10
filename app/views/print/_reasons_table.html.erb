@@ -1,0 +1,32 @@
+<table>
+    <tr>
+      <td class='left border-right'style="vertical-align: bottom" width = 587>
+        <b> Причины смерти</b> 
+      </td>
+      <td class='center border-right' width = 140 style='font-size:9pt;'>
+        Приблизительный период времени между началом патологического процесса и смертью 
+      </td>
+      <td class='center border-right' width = 84 >
+         Код  по МКБ-10 
+      </td>
+    </tr>    
+    <%= render partial: "print/reason_row", locals: { reason: @certificate.a_reason,
+                                                      letter: "I.а)", description: "(болезнь или состояние, непосредственно  приведшее к смерти)" } %>
+    <%= render partial: "print/reason_row", locals: { reason: @certificate.b_reason,
+                                                      letter: "б)", description: "(патологическое состояние, которое привело к возникновению вышеуказанной причины)" } %>
+    <%= render partial: "print/reason_row", locals: { reason: @certificate.c_reason,
+                                                      letter: "в)", description: "(первоначальная  причина смерти  указывается  последней)" } %>
+    <%= render partial: "print/reason_row", locals: { reason: @certificate.d_reason,
+                                                      letter: "г)", description: "(внешняя причина при травмах и  отравлениях)" } %>                                                    
+    <tr>
+      <td class='left' width = 487 style='font-size:8pt; line-height: 0.7em;'>
+        II. прочие важные состояния, способствовавшие смерти, но не связанные с болезнью или патологическим состоянием, приведшим к ней, включая употребление алкоголя, наркотических средств, психотропных  и других токсических веществ, содержание их в крови, а также операции (название, дата)
+      </td>
+      <td class='center' width = 140> </td>
+      <td class='center' width = 84 > </td>
+    </tr> 
+    <% 2.times do |i| %>
+      <%= render partial: "print/reason_row", locals: { reason: @certificate.death_reasons.size > i ? @certificate.death_reasons[i] : nil,
+                                                        letter: "", description: "" } %>
+    <% end %>
+  </table>

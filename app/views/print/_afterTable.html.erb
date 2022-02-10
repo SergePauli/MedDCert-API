@@ -1,0 +1,10 @@
+<li> <%= render partial: "print/reasons_table" %></li>
+    <li>В случае смерти в результате ДТП: <% ["смерть наступила - в течение 30", " из них в течение 7 суток"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.traffic_accident === index + 1, option: name, idx: index + 1 } %>    
+      <% end %></li>
+    <li>В случае: <% ["смерти беременной (независимо от срока и локализации)", "в процессе родов", "в течение 42 дней после окончания беременности", "кроме того в течение 43-365 дней после окончания беременности"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.pregnancy_connection === index + 1, option: name, idx: index + 1 } %>    
+      <% end %></li>  
+    <li>Фамилия, имя, отчество (при наличии) врача (фельдшера, акушерки), заполнившего Медицинское свидетельство о смерти <span class='value value-long'><%= @certificate.author && @certificate.author.doctor.person.name %></span> подпись <span class='value sign'>\ </span></li>

@@ -1,0 +1,130 @@
+<div class="print">
+  <div class="center" >                
+    <b>КОРЕШОК МЕДИЦИНСКОГО СВИДЕТЕЛЬСТВА О СМЕРТИ<br/>
+      К УЧЕТНОЙ ФОРМЕ № 106/У <br/> СЕРИЯ <span class='value'><%= @certificate.series %></span> № <span class='value'><%= @certificate.number %></span> ДАТА ВЫДАЧИ <span class='value'><%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;.</span>    
+    </b>               
+  </div>
+  <%= render partial: "print/head" %>
+  <ol start="1">
+    <%= render partial: "print/patient_fio_sex_bd", object: @certificate.patient %> 
+    <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { empty: false } %>
+        <%= render partial: "print/timePrint", object: @certificate.death_datetime %></li>
+    <li>Регистрация по месту жительства (пребывания) умершего(ей): 
+    <%= render partial: "print/addressPrint", locals: @regAddress %></li>
+    <li><%= render partial: "print/death_place", object: @certificate.death_place %></li>     
+    Для детей, умерших в возрасте до 1 года:<br/>  
+    <li>Дата рождения: <%= render partial: "print/datePrint", object: @certificate.patient.birth_date, locals: { empty: @days.blank? } %>         
+        число дней <span class='value'><%= @days %></span>
+        число месяцев<span class='value'><%= @month %></span> жизни 
+    </li>
+    <li>Место рождения: 
+    <%= render partial: "print/addressPrint", locals: @childAddress %></li>
+    <li>Фамилия, имя, отчество (при наличии) матери <span class='value value-long'><%= @certificate.child_info && @certificate.child_info.related_subject.name %> </span><br/><br/><br/></li>
+  </ol>   
+  <div style="line-height: 1rem; margin-top: 0.5rem; margin-bottom: 0.7rem; display: flex;" >
+    <div class="title" style="width:55%">  
+     <p style="padding-left:0.4em; margin-block-start: 0.3em; margin-block-end: 0.3em;">Министерство здравоохранения и социального развития<br/>
+     Российской Федерации<br/>
+     Наименование медицинской организации:<br/>
+     <i><%= @certificate.custodian.name %></i><br/>
+     <span>адрес: </span>
+     <span><b><i><%= @certificate.custodian.address.streetAddressLine %></i></b></span><br/>
+     Код по ОКПО: <b><i><%= @certificate.custodian.okpo %></i></b><br/>                    
+     <span>Номер и дата выдачи лицензии на осуществление медицинской деятельности:</span><br/>
+     <span style="text-decoration: underline;"><b><i><%= @certificate.custodian.license %> 
+     <%= @certificate.custodian.license_data %></i></b></span> </p>
+    </div>                
+    <div class="title" style="float: right; margin-left: 0.4rem; width:42%">  
+     <p style="padding-left:0.4em; ">Код формы по ОКУД ___________________<br/>
+      Медицинская документация<br/>
+      Учетная форма  № 106/У<br/>
+      Утверждена приказом Минздрава России <br/>
+      от «15» апреля 2021 г. №352н</p>
+    </div>
+  </div>
+  <div class="center" >                
+    <b>МЕДИЦИНСКОЕ СВИДЕТЕЛЬСТВО О СМЕРТИ<br/>
+       СЕРИЯ <span class='value'><%= @certificate.series %></span> № <span class='value'><%= @certificate.number %></span> ДАТА ВЫДАЧИ <span class='value'><%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;.</span>    
+    </b>               
+  </div>
+  <%= render partial: "print/head" %>
+  <ol start="1">
+    <%= render partial: "print/patient_fio_sex_bd", object: @certificate.patient %> 
+    <li>Документ, удостоверяющий личность умершего: <span class='value'>
+        <%= @certificate.patient.identity && @certificate.patient.identity.identity_card_type.name %>
+      </span>
+      серия <span class='value'>
+        <%= @certificate.patient.identity && @certificate.patient.identity.series %>
+      </span> 
+      номер <span class='value'>
+        <%= @certificate.patient.identity && @certificate.patient.identity.number %>
+      </span><br/>
+      кем и когда выдан <span class='value value-long'>
+        <%= @certificate.patient.identity &&
+              "#{@certificate.patient.identity.issueOrgName} #{@certificate.patient.identity.issueDate && @certificate.patient.identity.issueDate.strftime("%d.%m.%Y")}" %>
+      </span>
+    </li>
+    <li>СНИЛС <span class='value value-long'><%= @certificate.patient.person && @certificate.patient.person.SNILS %></span></li>
+    <li>Полис ОМС <span class='value value-long'><%= @certificate.policy_OMS %></span></li>
+    <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { empty: false } %>
+        <%= render partial: "print/timePrint", object: @certificate.death_datetime %></li>
+    <li>Регистрация по месту жительства (пребывания) умершего(ей): 
+    <%= render partial: "print/addressPrint", locals: @regAddress %></li>
+    <li>Местность: <% ["городская", "сельская"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.life_area_type === index + 1, option: name, idx: index + 1 } %>    
+      <% end %>
+    </li>
+    <li>Место смерти: 
+    <%= render partial: "print/addressPrint", locals: @deathAddress %></li>
+    <li>Местность: <% ["городская", "сельская"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.death_area_type === index + 1, option: name, idx: index + 1 } %>    
+      <% end %>
+    </li>
+    <li><%= render partial: "print/death_place", object: @certificate.death_place %></li>
+    <li>* Для детей, умерших в возрасте от 168 час. до 1 месяца: <% ["доношенный (37-41 недель)",
+                                                                                                          "недоношенный (менее 37 недель)", "переношенный (42 недель и более)"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.child_info && @certificate.child_info.term_pregnancy === index + 1, option: name, idx: index + 1 } %>    
+      <% end %>        
+    </li>
+    <li>* Для детей, умерших в возрасте от 168 час. до 1 года:
+        масса тела ребенка при рождении (грамм)
+        <span class='value'><%= @certificate.child_info && @certificate.child_info.weight %></span>
+        <span class='index'>1</span> <br/>
+        каким по счету был ребенок у матери (считая умерших и не считая мертворожденных)
+        <span class='value'><%= @certificate.child_info && @certificate.child_info.which_account %></span>
+        <span class='index'>2</span>
+        дата рождения матери
+        <span class='value'><%= @mother_birthday && @mother_birthday.strftime("%d.%m.%Y") %></span>
+        <span class='index'>3</span><br/>
+        возраст матери (полных лет)
+        <span class='value'><%= @mother_age %></span>
+        <span class='index'>4</span>
+        фамилия имя отчество(при наличии) матери
+        <span class='value value-long'><%= @mother_name %></span>
+        <span class='index'>5</span>
+    </li>
+    <li>* Семейное положение: <% ["состоял(а) в зарегистрированном браке", "не состоял(а) в зарегистрированном браке", "неизвестно"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.marital_status === (index === 2 ? index + 1 : index + 4), option: name, idx: index + 1 } %>    
+      <% end %>
+    </li>
+    <li>* Образование: <i>профессиональное:</i> <% ["высшее", "неполное высшее", "среднее профессиональное"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.education_level === index + 1, option: name, idx: index + 1 } %>    
+      <% end %>
+      <i>общее:</i> <% ["среднее", "основное", "начальное", "дошкольное", "не имеет начального образования", "неизвестно"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.education_level === (index === 5 ? index + 4 : (index < 3 ? index + 5 : index + 7)), option: name, idx: index + 4 } %>    
+      <% end %>
+    </li>
+    <li>* Занятость: <% ["работал(а)", "проходил(а) военную или приравненную к ней службу", "пенсионер(ка)", "студент(ка)", "не работал(ла)", "прочие", "неизвестно"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.social_status === [5, 6, 7, 4, 8, 10, 22][index], option: name, idx: index + 1 } %>    
+      <% end %></li>
+  </ol>
+  <em>* В случае смерти детей, возраст которых указан в пунктах 13-14, пункты 15-17 заполняются в отношении их матерей.</em>
+</div>
+

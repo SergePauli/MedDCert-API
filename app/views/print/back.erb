@@ -1,0 +1,28 @@
+<div class='print'>  
+  <ol start="10">    
+    <%= render partial: "print/afterTable" %>  
+    <li>Фамилия, имя, отчество (при наличии) получателя <span class='value value-long'><%= @certificate.author && @certificate.participant.person.name %></span> Документ, удостоверяющий личность получателя (серия, номер, кем выдан)  <span class='value value-long'><%= @certificate.participant && @certificate.participant.identity && @certificate.participant.identity.identity_text %></span> <br/> СНИЛС <span class='value value-long'> <%= @certificate.participant && @certificate.participant.person && @certificate.participant && @certificate.participant.person.SNILS %></span>Подпись получателя<span class='value sign'></span>/<%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;</li>
+  </ol>
+  <ol start='18'>
+    <li>Смерть произошла: <% ["от заболевания", "несчастного случая: не связанного с производством", "связанного с производством", "убийства", "самоубийства", "в ходе действий: военных", "террористических", "род смерти не установлен"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.death_kind === index + 1, option: name, idx: index + 1 } %>    
+      <% end %></li> 
+     <li>В случае смерти от несчастного случая, убийства, самоубийства, от военных и террористических действий, при    неустановленном роде смерти - указать дату травмы (отравления):<%= render partial: "print/datePrint", object: @certificate.ext_reason_time, locals: { empty: false } %>
+        <%= render partial: "print/timePrint", object: @certificate.ext_reason_time %>
+        , а также место и обстоятельства, при которых произошла травма (отравление) <span class='value value-long'><%= @certificate.ext_reason_description %></span></li> 
+     <li>Причины смерти установлены: <% ["врачом, только установившим смерть", " лечащим врачом", "фельдшером, акушеркой", "врачом-патологоанатомом", "врачом - судебно-медицинским экспертом"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.established_medic === index + 1, option: name, idx: index + 1 } %>    
+      <% end %></li>
+    <li>Я, врач (фельдшер, акушерка) <span class='value value-long'><%= @certificate.author && @certificate.author.doctor.person.name %></span> фамилия, имя, отчество (при наличии) должность<span class='value value-long'><%= @certificate.author && @certificate.author.doctor.position.name %></span>, удостоверяю, что на основании: <% ["осмотра трупа", "записей в медицинской документации", "предшествующего наблюдения за пациентом", "вскрытия"].each_with_index do |name, index| %>
+      <%= render partial: "print/optionPrint",
+                 locals: { selected: @certificate.basis_determining === index + 1, option: name, idx: index + 1 } %>    
+      <% end %>, мною установлены причины смерти.</li>
+    <%= render partial: "print/afterTable" %>    
+    <li>Руководитель (иное уполномоченное лицо**) медицинской организации <i>ПЕЧАТЬ</i>
+    <span class='value sign'></span>/<%= @certificate.legal_authenticator && @certificate.legal_authenticator.doctor.person.name %> </li>
+    <li>Свидетельство проверено ответственным за правильность заполнения медицинских свидетельств.<br/>
+    <span class='value'><%= @certificate.audithor && @certificate.audithor.time.strftime("%d.%m.%Y") %></span>г. подпись<span class='value sign'>\</span>фамилия, имя, отчество (при наличии)<span class='value long-value'><%= @certificate.audithor && @certificate.audithor.doctor.person.name %></span> </li>  
+  </ol>
+</div>

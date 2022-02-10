@@ -1,0 +1,42 @@
+<tr>
+  <td class='border-right' style='line-height: 1em; padding: 0'>
+    <table style='width: 100%;'><tr height="20">
+      <td width=13 style="vertical-align: bottom"><%= letter %></td> 
+      <td style="font-size:9pt; line-height: 0.7em; border-bottom: thin solid; padding-left: 0.3em; vertical-align: bottom">
+        <i><b><%= reason && reason.diagnosis_name %></b></i></td></tr>
+        <tr height="5">
+          <td width=13 ></td> 
+          <td class='center' style="font-size:6pt; line-height: 0.5em;"><%= description %></td>
+        </tr>
+    </table>
+  </td>
+  <td class='border-right' style='line-height: 1em; padding: 0'>
+    <table style='width: 100%;'><tr height="20">
+      <td class='center' style="line-height: 0.7em; border-bottom: thin solid; vertical-align: bottom;">
+        <i><b><%= reason && reason.terms_to_s %></b></i>
+      </td></tr>
+      <tr height="5">
+        <td style="font-size:6pt; line-height: 0.5em;"></td>  
+      </tr>
+    </table>
+  </td>
+  <td class='border-right' style='line-height: 1em; padding: 0; vertical-align: middle'>
+    <table style='width: 100%;'>
+      <tr height="17" > 
+        <td width="17" class="td_index"> 
+          <%= reason.blank? || reason.diagnosis.blank? ? "" : reason.diagnosis.ICD10[0] %>
+        </td>
+        <td width="17" class="td_index"> 
+          <%= reason.blank? || reason.diagnosis.blank? ? "" : reason.diagnosis.ICD10[1] %>
+        </td>
+        <td width="17" class="td_index">
+          <%= reason.blank? || reason.diagnosis.blank? || reason.diagnosis.ICD10.size < 3 ? "" : reason.diagnosis.ICD10[2] %>
+        </td>
+        <td width="22" class="center"><B style="font-size:16pt">.</B></td>
+        <td width="17" class="td_index">
+          <%= reason.blank? || reason.diagnosis.blank? || reason.diagnosis.ICD10.size < 5 ? "" : reason.diagnosis.ICD10[4] %>
+        </td>
+      </tr> 
+    </table>
+  </td>
+</tr>

@@ -1,0 +1,16 @@
+<div class="center" style="padding: 2px 0 2px 0;">                
+    (<span  class="<%= @certificate.cert_type == 1 ? "selected" : "" %>">окончательное, </span>
+     <span  class="<%= @certificate.cert_type == 2 ? "selected" : "" %>">предварительное, </span>
+     <span  class="<%= @certificate.cert_type == 3 ? "selected" : "" %>">взамен предварительного, </span>
+     <span  class="<%= @certificate.cert_type == 4 ? "selected" : "" %>">взамен окончательного </span>)        
+     <br/><i><sup>(подчеркнуть)</sup></i><br/>
+      <b>ранее выданное свидетельство: 
+      <% if @certificate.cert_type === 1 || @certificate.cert_type === 2 %>
+        <i>нет</i>
+      <% else %>
+          СЕРИЯ <span class="value"><%= @certificate.series_prev %></span>
+          № <span class="value"><%= @certificate.number_prev %></span>
+          OT <span class="value"><%= @certificate.eff_time_prev ? @certificate.eff_time_prev.strftime("%d.%m.%Y") : "" %></span>
+      <% end %>    
+    </b>
+  </div>  
