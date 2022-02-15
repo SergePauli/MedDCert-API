@@ -17,14 +17,17 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     @res = @res.offset(params[:offset].to_i) if params[:offset]
     @res = @res.select(params[:select]) unless params[:select].blank?
     @res = @res.ransack(params[:q]).result unless params[:q].blank?
-    @res = @res.count unless params[:count].blank?
-    @res = @res.includes(params[:includes]) unless params[:includes].blank?
-    r_options = {}
-    if !params[:render_options].blank?
-      r_options = render_options(params[:render_options].to_unsafe_h)
-      render json: @res.all.to_json(r_options)
+    if params[:count].blank?
+      @res = @res.includes(params[:includes]) unless params[:includes].blank?
+      r_options = {}
+      if !params[:render_options].blank?
+        r_options = render_options(params[:render_options].to_unsafe_h)
+        render json: @res.all.to_json(r_options)
+      else
+        render json: @res.all
+      end
     else
-      render json: @res.all
+      render json: @res.count
     end
   end
 
