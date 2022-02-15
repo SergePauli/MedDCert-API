@@ -46,8 +46,8 @@ class RestApi::V1::PrintController < ActionController::Base
       @deathAddress = copy_address
       @deathAddress[:nullFlavor] = "НЕИЗВЕСТНО"
     end
-    if !@month.blank? && @certificate.child_info && @certificate.child_info.address
-      adr = @certificate.child_info.address
+    adr = @certificate.child_info && @certificate.child_info.address
+    if adr
       @address = copy_address(adr)
       result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
       if result && result["data"].length > 0
@@ -57,9 +57,12 @@ class RestApi::V1::PrintController < ActionController::Base
         @childAddress = copy_address
         @childAddress[:nullFlavor] = "ОШИБКА ПЕЧАТИ"
       end
-    else
+    elsif @certificate.child_info
       @childAddress = copy_address
       @childAddress[:nullFlavor] = "НЕИЗВЕСТНО"
+    else
+      @childAddress = copy_address
+      @childAddress[:nullFlavor] = "НЕПРИМЕНИМО"
     end
     mother_info
     render "print/face", layout: "print"
@@ -104,7 +107,7 @@ class RestApi::V1::PrintController < ActionController::Base
     @mother_name = @certificate.child_info &&
                    @certificate.child_info.related_subject &&
                    @certificate.child_info.related_subject.name
-    if @days > 30 || @mother_birthday.blank?
+    if @days.blank? || @days > 30 || @mother_birthday.blank?
       @mother_age = ""
     else
       @mother_age = Date.today.year - @mother_birthday.year
