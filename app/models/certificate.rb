@@ -84,7 +84,7 @@ class Certificate < ApplicationRecord
      :death_datetime, :death_year, :death_place, :marital_status, :education_level,
      :social_status, :death_kind, :ext_reason_time, :ext_reason_description, :traffic_accident,
      :established_medic, :basis_determining, :reason_ACME, :pregnancy_connection,
-     :custodian_id,
+     :custodian_id, :patient_id, :series_prev, :number_prev, :eff_time_prev,
      a_reason_attributes: DeathReason.permitted_params,
      b_reason_attributes: DeathReason.permitted_params,
      c_reason_attributes: DeathReason.permitted_params,
@@ -99,4 +99,7 @@ class Certificate < ApplicationRecord
      participant_attributes: Participant.permitted_params,
      null_flavors_attributes: NullFlavor.permitted_params]
   end
+
+  # Abbreviate :author_first_name_or_author_last_name to :patient_fio
+  ransack_alias :patient_fio, :patient_person_person_name_family_or_patient_person_person_name_given_1_or_patient_person_person_name_given_2
 end
