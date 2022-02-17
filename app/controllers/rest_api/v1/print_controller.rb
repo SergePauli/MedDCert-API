@@ -3,7 +3,7 @@ require "rest-client"
 
 class RestApi::V1::PrintController < ActionController::Base
   #before_action :authenticate_request
-  #before_action :find_record
+  #attr_reader :current_user
 
   def index
     render template: "print/index"
@@ -118,7 +118,7 @@ class RestApi::V1::PrintController < ActionController::Base
     # заголовки в запросе
     headers = { content_type: :json, accept: :json }
     # Параметры подключения к ФИАС сервису
-    url_string = "http://localhost:5050/fias?parent=#{parent}&withParent=1&level=#{level}&limit=1"
+    url_string = "#{Rails.configuration.fias_url}?parent=#{parent}&withParent=1&level=#{level}&limit=1"
     r = RestClient::Request.execute(method: :get, url: url_string, headers: headers)
     return JSON.parse(r)
   end
