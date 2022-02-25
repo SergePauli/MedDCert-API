@@ -9,7 +9,7 @@
         <i>нет</i>
       <% else %>
           СЕРИЯ <span class="value"><%= @certificate.series_prev %></span>
-          № <span class="value"><%= @certificate.number_prev %></span>
+          № <span class="value">2<%= @certificate.number_prev[1..8] %></span>
           OT <span class="value"><%= @certificate.eff_time_prev ? @certificate.eff_time_prev.strftime("%d.%m.%Y") : "" %></span>
       <% end %>    
     </b>

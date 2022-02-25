@@ -1,7 +1,7 @@
 <div class="print">
   <div class="center" >                
     <b>КОРЕШОК МЕДИЦИНСКОГО СВИДЕТЕЛЬСТВА О СМЕРТИ<br/>
-      К УЧЕТНОЙ ФОРМЕ № 106/У <br/> СЕРИЯ <span class='value'><%= @certificate.series %></span> № <span class='value'><%= @certificate.number %></span> ДАТА ВЫДАЧИ <span class='value'><%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;.</span>    
+      К УЧЕТНОЙ ФОРМЕ № 106/У <br/> СЕРИЯ <span class='value'><%= @certificate.series %></span> № <span class='value'>2<%= @certificate.number[1..8] %></span> ДАТА ВЫДАЧИ <span class='value'><%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;.</span>    
     </b>               
   </div>
   <%= render partial: "print/head" %>
@@ -44,7 +44,7 @@
   </div>
   <div class="center" >                
     <b>МЕДИЦИНСКОЕ СВИДЕТЕЛЬСТВО О СМЕРТИ<br/>
-       СЕРИЯ <span class='value'><%= @certificate.series %></span> № <span class='value'><%= @certificate.number %></span> ДАТА ВЫДАЧИ <span class='value'><%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;.</span>    
+       СЕРИЯ <span class='value'><%= @certificate.series %></span> № <span class='value'>2<%= @certificate.number[1..8] %></span> ДАТА ВЫДАЧИ <span class='value'><%= @certificate.issue_date.strftime("%d.%m.%Y") %> &#1075;.</span>    
     </b>               
   </div>
   <%= render partial: "print/head" %>
