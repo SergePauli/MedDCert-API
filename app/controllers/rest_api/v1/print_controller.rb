@@ -1,17 +1,13 @@
 # This is rest-client for FIAS API
 require "rest-client"
+require "nsi_constant.rb"
 
-class RestApi::V1::PrintController < ActionController::Base
+class RestApi::V1::PrintController < RestApi::DocumentController
   #before_action :authenticate_request
   #attr_reader :current_user
 
-  def index
-    render template: "print/index"
-  end
-
   # GET /REST_API/v1/print/face/:id
   def face
-    find_record
     @month = age_month
     if @certificate.patient.person && @certificate.patient.person.address
       adr = @certificate.patient.person.address
@@ -70,15 +66,10 @@ class RestApi::V1::PrintController < ActionController::Base
 
   # GET /REST_API/v1/print/back/:id
   def back
-    find_record
     render "print/back", layout: "print"
   end
 
   private
-
-  def find_record
-    @certificate = Certificate.find params[:id]
-  end
 
   def age_days
     return "" if @certificate.patient.birth_date.blank? || @certificate.death_datetime.blank?
