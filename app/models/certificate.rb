@@ -1,27 +1,28 @@
 # Модель данных свидетельства (Main data model)
-class Certificate < ApplicationRecord
+class Certificate < NullFlavorRecord
   # audit needed
   def self.trackable?
     true
   end
 
   def self.cert_types
-    ["не определенное", "окончательное", "предварительное",
+    ["окончательное", "предварительное",
      "взамен предварительного", "взамен окончательного"]
   end
 
   after_initialize do |cert|
     # Check if certificate is new
     if cert.number&.length === 2
-      minNumber = "1#{Date.today.to_s[2..3]}#{cert.number}0000"
-      maxNumber = "1#{Date.today.to_s[2..3]}#{cert.number}9999"
+      minNumber = "2#{Date.today.to_s[2..3]}#{cert.number}0000"
+      maxNumber = "2#{Date.today.to_s[2..3]}#{cert.number}9999"
       prevNumber = Certificate.where("number > ?", minNumber).where("number < ?", maxNumber).maximum(:number)
-      cert.number = prevNumber === nil ? "1#{Date.today.to_s[2..3]}#{cert.number}0001" : (prevNumber.to_i + 1).to_s
+      cert.number = prevNumber === nil ? "2#{Date.today.to_s[2..3]}#{cert.number}0001" : (prevNumber.to_i + 1).to_s
     end
   end
 
   #-------------------------Связи-------------------------------------------
-
+  # Связь с записью данных о версии свидетельства
+  has_one :version, foreign_key: "certificate_id", primary_key: "id", class_name: "Version", autosave: true, dependent: :destroy
   # Связь с записью пациента
   belongs_to :patient, primary_key: "id", foreign_key: "patient_id", autosave: true
   accepts_nested_attributes_for :patient
