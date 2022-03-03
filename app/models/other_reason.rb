@@ -7,6 +7,7 @@ class OtherReason < DeathReason
   def diagnosis_name
     result = diagnosis.s_name
     result += procNames if procedures.size > 0
+    return result
   end
 
   # генерируем строку хирургических операций(процедур)
