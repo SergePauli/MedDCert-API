@@ -1,4 +1,8 @@
-class Patient < ApplicationRecord
+class Patient < NullFlavorRecord
+  # by default audit not needed
+  def self.trackable?
+    false
+  end
   #enum addr_type: { "Адрес по месту жительства (постоянной регистрации)": 1, "Адрес по месту пребывания (временной #регистрации)": 2, "Адрес фактического проживания (пребывания)": 3, "Адрес места учебы/работы": 4 }
   # Связь с записью данных медорганизации
   belongs_to :organization

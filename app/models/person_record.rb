@@ -1,5 +1,5 @@
 # for using in models belongs to person_name
-class PersonRecord < ActiveRecord::Base
+class PersonRecord < NullFlavorRecord
   self.abstract_class = true
 
   belongs_to :person_name
@@ -11,7 +11,7 @@ class PersonRecord < ActiveRecord::Base
   end
 
   def initials
-    "#{person_name.family} #{person_name.given_1[0, 1]} #{person_name.given_2[0, 1]}".strip
+    "#{person_name.family} #{person_name.given_1[0, 1]} #{person_name.given_2 && person_name.given_2[0, 1]}".strip
   end
 
   after_initialize do |person|

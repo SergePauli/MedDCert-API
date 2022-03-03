@@ -16,6 +16,10 @@ class User < PersonRecord
     "Пользователь[#{id}] #{email} #{initials}"
   end
 
+  def nullFlavor(attr_name)
+    false
+  end
+
   VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
 
   validates :email, presence: true
