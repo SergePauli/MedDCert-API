@@ -7,7 +7,7 @@ class PersonRecord < NullFlavorRecord
   accepts_nested_attributes_for :person_name
 
   def name
-    "#{person_name.family} #{person_name.given_1} #{person_name.given_2}".strip
+    "#{person_name.family} #{person_name.given_1} #{person_name.given_2 && person_name.given_2}".strip
   end
 
   def initials
