@@ -130,7 +130,7 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     when "City"
       @address[:city] = fias_item["name"]
     when "District"
-      @address[:distric] = fias_item["name"]
+      @address[:district] = fias_item["name"]
     when "Region"
       @address[:region] = "#{fias_item["name"]} #{fias_item["shortname"]}"
     end
