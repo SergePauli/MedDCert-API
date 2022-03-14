@@ -1,4 +1,4 @@
-Смерть наступила: <% NsiConstant::DEATH_PLACES.each_with_index do |name, index| %>
+Смерть наступила: <% NsiConstant::DEATH_PLACES.each_with_index do |name, index| %> 
           <%= render partial: "print/optionPrint",
-                     locals: { selected: death_place === (index === 5 ? index + 2 : index + 1), option: name, idx: index + 1 } %>    
+                     locals: { selected: death_place == (index == 4 ? index + 3 : (index == 5 ? index : index + 1)), option: name, idx: index + 1 } %>    
          <% end %>
