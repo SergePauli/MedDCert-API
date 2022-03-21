@@ -20,9 +20,9 @@
                  locals: { selected: @certificate.basis_determining === index + 1, option: name, idx: index + 1 } %>    
       <% end %>, мною установлены причины смерти.</li>
     <%= render partial: "print/afterTable" %>    
-    <li>Руководитель (иное уполномоченное лицо**) медицинской организации <i>ПЕЧАТЬ</i>
+    <li class='nostyle' >Руководитель (иное уполномоченное лицо**) медицинской организации <i>ПЕЧАТЬ</i>
     <span class='value sign'></span>/<%= @certificate.legal_authenticator && @certificate.legal_authenticator.doctor.person.name %> </li>
-    <li>Свидетельство проверено ответственным за правильность заполнения медицинских свидетельств.<br/>
+    <li value="26">Свидетельство проверено ответственным за правильность заполнения медицинских свидетельств.<br/>
     <span class='value'><%= @certificate.audithor && @certificate.audithor.time.strftime("%d.%m.%Y") %></span>г. подпись<span class='value sign'>\</span>фамилия, имя, отчество (при наличии)<span class='value long-value'><%= @certificate.audithor && @certificate.audithor.doctor.person.name %></span> </li>  
   </ol>
 </div>

@@ -4,10 +4,10 @@
      <span  class="<%= @certificate.cert_type == 3 ? "selected" : "" %>">взамен предварительного, </span>
      <span  class="<%= @certificate.cert_type == 4 ? "selected" : "" %>">взамен окончательного </span>)        
      <br/><i><sup>(подчеркнуть)</sup></i><br/>
-      <b>ранее выданное свидетельство: 
+      ранее выданное свидетельство: <br/>
       <% if @certificate.cert_type === 1 || @certificate.cert_type === 2 %>
-        <i>нет</i>
-      <% else %>
+        <b><i>НЕТ</i></b>
+      <% else %>        
           СЕРИЯ <span class="value"><%= @certificate.series_prev %></span>
           № <span class="value">2<%= @certificate.number_prev[1..8] %></span>
           OT <span class="value"><%= @certificate.eff_time_prev ? @certificate.eff_time_prev.strftime("%d.%m.%Y") : "" %></span>
