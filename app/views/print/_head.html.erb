@@ -6,7 +6,9 @@
      <br/><i><sup>(подчеркнуть)</sup></i><br/>
       ранее выданное свидетельство: <br/>
       <% if @certificate.cert_type === 1 || @certificate.cert_type === 2 %>
-        <b><i>НЕТ</i></b>
+        СЕРИЯ <span class="value"></span>
+          № <span class="value"></span>
+          OT <span class="value"></span>
       <% else %>        
           СЕРИЯ <span class="value"><%= @certificate.series_prev %></span>
           № <span class="value">2<%= @certificate.number_prev[1..8] %></span>
