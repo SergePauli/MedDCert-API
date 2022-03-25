@@ -8,7 +8,7 @@
   <ol start="1">
     <%= render partial: "print/patient_fio_sex_bd", object: @certificate.patient %> 
     <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { empty: false } %>
-        <%= render partial: "print/timePrint", object: @certificate.death_datetime %></li>
+        <%= render partial: "print/timePrint", object: @is_death_time ? @certificate.death_datetime : false %></li>
     <li>Регистрация по месту жительства (пребывания) умершего(ей): 
     <%= render partial: "print/addressPrint", locals: @regAddress %></li>
     <li><%= render partial: "print/death_place", object: @certificate.death_place %></li>     

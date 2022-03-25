@@ -8,6 +8,8 @@ class RestApi::V1::PrintController < RestApi::DocumentController
 
   # GET /REST_API/v1/print/face/:id
   def face
+    @is_death_time = @certificate.nullFlavor("death_time") ? false : true
+    @is_ext_time = @certificate.ext_reason_time.hour != 0 || @certificate.ext_reason_time.min != 0
     @month = age_month
     if @certificate.patient.person && @certificate.patient.person.address
       adr = @certificate.patient.person.address
