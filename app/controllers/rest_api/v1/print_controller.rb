@@ -15,12 +15,12 @@ class RestApi::V1::PrintController < RestApi::DocumentController
       adr = @certificate.patient.person.address
       @address = copy_address(adr)
       result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
-      if result && result["data"].length > 0
+      if result && result["data"] && result["data"].length > 0
         parse_address_info(result["data"][0])
         @regAddress = @address.dup
       else
         @regAddress = copy_address
-        @regAddress[:nullFlavor] = "ОШИБКА ПЕЧАТИ"
+        @regAddress[:nullFlavor] = "ОШИБКА В АДРЕСЕ"
       end
     elsif @certificate.patient.person
       @regAddress = copy_address
@@ -33,12 +33,12 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     if adr
       @address = copy_address(adr)
       result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
-      if result && result["data"].length > 0
+      if result && result["data"] && result["data"].length > 0
         parse_address_info(result["data"][0])
         @deathAddress = @address.dup
       else
         @deathAddress = copy_address
-        @deathAddress[:nullFlavor] = "ОШИБКА ПЕЧАТИ"
+        @deathAddress[:nullFlavor] = "ОШИБКА В АДРЕСЕ"
       end
     else
       @deathAddress = copy_address
@@ -48,12 +48,12 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     if adr
       @address = copy_address(adr)
       result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
-      if result && result["data"].length > 0
+      if result && result["data"] && result["data"].length > 0
         parse_address_info(result["data"][0])
         @childAddress = @address.dup
       else
         @childAddress = copy_address
-        @childAddress[:nullFlavor] = "ОШИБКА ПЕЧАТИ"
+        @childAddress[:nullFlavor] = "ОШИБКА В АДРЕСЕ"
       end
     elsif @certificate.child_info
       @childAddress = copy_address
