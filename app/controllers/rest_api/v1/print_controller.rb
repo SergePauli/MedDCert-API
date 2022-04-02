@@ -14,7 +14,7 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     if @certificate.patient.person && @certificate.patient.person.address
       adr = @certificate.patient.person.address
       @address = copy_address(adr)
-      result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
+      result = request_address_info(adr.aoGUID, adr.houseGUID ? true : false)
       if result && result["data"] && result["data"].length > 0
         parse_address_info(result["data"][0])
         @regAddress = @address.dup
@@ -32,7 +32,7 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     adr = @certificate.death_addr
     if adr
       @address = copy_address(adr)
-      result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
+      result = request_address_info(adr.aoGUID, adr.houseGUID ? true : false)
       if result && result["data"] && result["data"].length > 0
         parse_address_info(result["data"][0])
         @deathAddress = @address.dup
@@ -47,7 +47,7 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     adr = @certificate.child_info && @certificate.child_info.address
     if adr
       @address = copy_address(adr)
-      result = request_address_info(adr.aoGUID, adr.houseGUID ? "building" : "")
+      result = request_address_info(adr.aoGUID, adr.houseGUID ? true : false)
       if result && result["data"] && result["data"].length > 0
         parse_address_info(result["data"][0])
         @childAddress = @address.dup
@@ -107,11 +107,12 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     end
   end
 
-  def request_address_info(parent, level)
+  def request_address_info(parent, building = false)
     # заголовки в запросе
     headers = { content_type: :json, accept: :json }
     # Параметры подключения к ФИАС сервису
-    url_string = "#{Rails.configuration.fias_url}?parent=#{parent}&withParent=1&level=#{level}&limit=1"
+    id_level_param = building ? "id=#{parent}&level=Building" : "id=#{parent}"
+    url_string = "#{Rails.configuration.fias_url}?#{id_level_param}&withParent=1&limit=1"
     r = RestClient::Request.execute(method: :get, url: url_string, headers: headers)
     return JSON.parse(r)
   end
