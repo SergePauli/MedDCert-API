@@ -13,10 +13,13 @@ class Certificate < NullFlavorRecord
   after_initialize do |cert|
     # Check if certificate is new
     if cert.number&.length === 2
-      minNumber = "2#{Date.today.to_s[2..3]}#{cert.number}0000"
-      maxNumber = "2#{Date.today.to_s[2..3]}#{cert.number}9999"
+      # Need to assign correct number
+      first_digit = cert.approval_e_version && cert.approval_e_version? ? "1" : "2"
+      start = "#{first_digit}#{Date.today.to_s[2..3]}#{cert.number}"
+      minNumber = start + "0000"
+      maxNumber = start + "9999"
       prevNumber = Certificate.where("number > ?", minNumber).where("number < ?", maxNumber).maximum(:number)
-      cert.number = prevNumber === nil ? "2#{Date.today.to_s[2..3]}#{cert.number}0001" : (prevNumber.to_i + 1).to_s
+      cert.number = prevNumber === nil ? start + "0001" : (prevNumber.to_i + 1).to_s
     end
   end
 
@@ -85,7 +88,7 @@ class Certificate < NullFlavorRecord
      :death_datetime, :death_year, :death_place, :marital_status, :education_level,
      :social_status, :death_kind, :ext_reason_time, :ext_reason_description, :traffic_accident,
      :established_medic, :basis_determining, :reason_ACME, :pregnancy_connection,
-     :custodian_id, :patient_id, :series_prev, :number_prev, :eff_time_prev,
+     :custodian_id, :patient_id, :series_prev, :number_prev, :eff_time_prev, :approval_e_version,
      a_reason_attributes: DeathReason.permitted_params,
      b_reason_attributes: DeathReason.permitted_params,
      c_reason_attributes: DeathReason.permitted_params,
