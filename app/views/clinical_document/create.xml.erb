@@ -1,0 +1,452 @@
+<realmCode code="RU"/>   
+  <typeId root="2.16.840.1.113883.1.3" extension="POCD_MT000040"/>   
+  <templateId root="1.2.643.5.1.13.2.7.5.1.13.9.5"/> 
+  <id root="<%= @root %>.51" extension="<%= @certificate.id %>"/>  
+  <code code="13" codeSystem="1.2.643.5.1.13.13.11.1522" codeSystemVersion="4.2" codeSystemName="Виды медицинской документации" displayName="Медицинское свидетельство о смерти"/>    
+  <title>Медицинское свидетельство о смерти</title>   
+  <effectiveTime value="<%= @issueDate.strftime("%Y%m%d") %>"/>   
+  <confidentialityCode code="N" codeSystem="1.2.643.5.1.13.13.99.2.285" codeSystemVersion="1.1" codeSystemName="Уровень конфиденциальности документа" displayName="обычный"/>   
+  <languageCode code="ru-RU"/>             
+  <setId root="<%= @root %>.50" extension="<%= @certificate.version.id %>"/>  
+  <!-- R [1..1] Номер версии данного документа -->  
+  <versionNumber value="<%= @certificate.version.version_number %>"/>  
+    <!-- R [1..1] ДАННЫЕ ОБ УМЕРШЕМ -->  
+  <recordTarget>    
+    <patientRole>    
+      <!-- R [1..1] Уникальный идентификатор умершего -->
+      <id root="<%= @root %>.10" extension="<%= @certificate.patient.id %>"/>           
+      <% if @snils %>
+      <id root="1.2.643.100.3" extension="<%= @snils %>"/>
+      <% else %>
+      <id root="1.2.643.100.3" nullFlavor="<%= @snils_nullFlavor || @patient_person_nullFlavor %>"/>
+      <% end %>      
+      <!-- [1..1] ЛОКАЛЬНЫЙ ЭЛЕМЕНТ: Документ, удостоверяющий личность умершего-->
+      <% if @identity %> 
+        <%= render partial: "clinical_document/identity", object: @identity %>
+      <% else %>          
+        <identity:IdentityDoc nullFlavor="<%= @patient_identity_nullFlavor || @patient_person_nullFlavor %>"/>
+      <% end %>    
+      <!-- [1..1] Адрес постоянной регистрации умершего -->
+      <% if @person.address %>     
+      <addr>    
+        <%= render partial: "clinical_document/addr" %>
+      </addr>
+      <% else %>
+      <addr nullFlavor="<%= @patient_address_nullFlavor || @patient_person_nullFlavor %>"/>
+      <% end %>
+        <!-- R [1..1] УМЕРШИЙ (человек) -->    
+      <patient>     
+        <!-- [1..1] ФИО умершего -->
+        <% if @patient_FIO %>     
+        <name>  
+          <%= render partial: "clinical_document/name", object: @patient_FIO %>         </name>
+        <% else %>
+        <name nullFlavor="<%= @patient_person_nullFlavor %>"/>
+        <% end %>
+        <administrativeGenderCode code="<%= @patient.gender %>" codeSystem="1.2.643.5.1.13.13.11.1040" codeSystemVersion="2.1" codeSystemName="Пол пациента" displayName="<%= ["Мужской", "Женский"][@patient.gender - 1] %>"/>
+        <birthTime value="<%= @patient.birth_date.strftime("%Y%m%d") %>"/>    
+      </patient>
+      <!--  R [1..1] Организация, констатировавшая факт смерти -->
+			<providerOrganization>
+        <%= render partial: "clinical_document/organization", object: @certificate.custodian %>
+      </providerOrganization>
+    </patientRole>
+  </recordTarget>
+    <!-- R [1..1] ДАННЫЕ ОБ АВТОРЕ ДОКУМЕНТА -->
+	<author>
+		<time nullFlavor="NI"/>
+		  <!-- R [1..1] АВТОР (роль) -->
+		<assignedAuthor>
+      <%= render partial: "clinical_document/authenticathor", object: @certificate.author %>    
+    </assignedAuthor>
+  </author>
+      <!-- R [1..1] ДАННЫЕ ОБ ОРГАНИЗАЦИИ-ВЛАДЕЛЬЦЕ ДОКУМЕНТА -->
+	<custodian>
+		<!-- R [1..1] Организация-владелец документа (роль) -->
+		<assignedCustodian>
+			<!-- R [1..1] Организация-владелец документа (организация) -->
+			<representedCustodianOrganization>
+        <%= render partial: "clinical_document/organization", object: @certificate.custodian %>
+      </representedCustodianOrganization>
+    </assignedCustodian>
+  </custodian>      
+    <!-- R [1..1] ДАННЫЕ О ПОЛУЧАТЕЛЕ ДОКУМЕНТА-->
+	<informationRecipient>
+		<!-- R [1..1] Получатель документа (роль) -->
+		<intendedRecipient>
+			<!-- R [1..1] Получатель документа (организация) -->
+			<receivedOrganization>
+				<!-- R [1..1] Идентификатор получающей организации-->
+				<id root="1.2.643.5.1.13"/>
+				<!-- R [1..1] Наименование получающей организации-->
+				<name>Министерство здравоохранения Российской Федерации</name>
+			</receivedOrganization>
+		</intendedRecipient>
+	</informationRecipient>  
+	<legalAuthenticator>
+		<time nullFlavor="NI" />
+		<signatureCode nullFlavor="NI"/>
+		  <!-- R [1..1] Лицо, придавшен юридическую силу документу (роль) -->
+		<assignedEntity>
+      <%= render partial: "clinical_document/authenticathor", object: @certificate.legal_authenticator %>
+    </assignedEntity>
+  </legalAuthenticator>
+  <% if @certificate.audithor %>
+  <authenticator>
+		<time nullFlavor="NI" />
+		<signatureCode nullFlavor="NI" />
+    <assignedEntity>
+      <%= render partial: "clinical_document/authenticathor", object: @certificate.audithor %>
+		</assignedEntity>
+  </authenticator>    
+  <% end %>
+  <component>		
+		<structuredBody>
+      <!-- R [1..1] СЕКЦИЯ: Сведения о документе-->
+			<component>
+				<section>					
+					<code code="DOCINFO" codeSystem="1.2.643.5.1.13.13.99.2.197" codeSystemVersion="1.8" codeSystemName="Секции электронных медицинских документов" displayName="Сведения о документе"/>					
+					<title>Медицинское свидетельство о смерти</title>					
+					<text>
+						<content>СЕРИЯ <%= @certificate.series %></content>
+						<content>N <%= @number %></content>
+						<br/>
+						<content>Дата выдачи <%= render partial: "clinical_document/dateLocal", object: @issueDate %> г.</content>
+						<br/>
+						<content><%= Certificate.cert_types[@certificate.cert_type - 1] %></content>
+            <% if @certificate.cert_type > 2 %>
+						<content>серия <%= @certificate.series_prev %> </content>
+						<content>№ <%= @certificate.number_prev %> </content>
+						<content>от <%= render partial: "clinical_document/dateLocal", object: @certificate.eff_time_prev %> г. </content>
+            <% end %>
+						<br/>
+						<content>Cогласие на формирование медицинского свидетельства о смерти в форме электронного документа <%= @certificate.approval_e_version && @certificate.approval_e_version? ? "получено" : "отсутствует" %></content>
+						<br/>
+						<content>Код ОКУД 5103835 2</content>
+						<br/>
+					</text>
+          <entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="5013" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Серия медицинского свидетельства о смерти"/>
+							<value xsi:type="ST"><%= @certificate.series %></value>
+						</observation>
+					</entry>
+          <entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="5014" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Номер медицинского свидетельства о смерти"/>
+							<value xsi:type="ST"><%= @number %></value>
+						</observation>
+					</entry>
+          <entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="511" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Тип свидетельства о смерти"/>
+							<value xsi:type="CD" code="<%= @certificate.cert_type %>" codeSystem="1.2.643.5.1.13.13.99.2.19" codeSystemVersion="1.1" codeSystemName="Вид медицинского свидетельства о смерти" displayName="<%= Certificate.cert_types[@certificate.cert_type - 1] %>"/>
+						</observation>
+					</entry>
+          <entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="5015" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Серия предшествующего медицинского свидетельства о смерти"/>
+              <% if @certificate.cert_type > 2 %>
+							<value xsi:type="ST"><%= @certificate.series_prev %></value>
+              <% else %>
+              <value nullFlavor="NA"/>
+              <% end %>
+						</observation>
+					</entry>
+          <entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="5016" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Номер предшествующего медицинского свидетельства о смерти"/>
+							<% if @certificate.cert_type > 2 %>
+							<value xsi:type="ST"><%= @certificate.number_prev %></value>
+              <% else %>
+              <value nullFlavor="NA"/>
+              <% end %>
+						</observation>
+					</entry>
+          <entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="112" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Дата выдачи предшествующего медицинского свидетельства о смерти"/>
+							<% if @certificate.cert_type > 2 %>
+							<value xsi:type="TS"><%= @certificate.eff_time_prev.strftime("%Y%m%d") %></value>
+              <% else %>
+              <value nullFlavor="NA"/>
+              <% end %>
+						</observation>
+					</entry>
+          <!-- R[1..1] кодирование...Наличие согласия на формирование медицинского свидетельства о смерти в форме электронного документа -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="12135" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Наличие согласия на формирование медицинского свидетельства о смерти в форме электронного документа"/>
+							<value xsi:type="BL" value="false"/>
+						</observation>
+					</entry>
+          <!-- R [1..1] кодирование...Код формы по ОКУД -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="6082" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Код ОКУД"/>
+							<value xsi:type="ST">5103835 2</value>
+						</observation>
+					</entry>
+        </section>  
+      </component>  
+      <component>
+				<section>					
+					<code code="DEADPATINFO" codeSystem="1.2.643.5.1.13.13.99.2.197" codeSystemVersion="1.8" codeSystemName="Секции электронных медицинских документов" displayName="Информация об умершем"/>					
+					<title>Информация об умершем</title>
+					<text>						
+            <content>Дата рождения: <% if @patient.birth_date %><%= render partial: "clinical_document/dateLocal", object: @patient.birth_date %><% else %>неизвестна<% end %> года.</content>						<br/>
+            <content>Дата смерти: <% if @certificate.death_datetime %><%= render partial: "clinical_document/dateLocal", object: @certificate.death_datetime %> года<% if @certificate.death_datetime.hour > 0 && @certificate.death_datetime.min > 0 %>, время <%= @certificate.death_datetime.strftime("%H:%M") %><% end %><% else %> неизвестна<% end %>.</content>
+						<br/>
+            <content>Место постоянного жительства (регистрации): <% if @person.address %><%= @person.address.streetAddressLine %><% end %></content>
+            <br/>
+            <content>Местность: <% if @certificate.life_area_type %><%= @certificate.life_area_type %> - <%= NsiConstant::AREA_TYPES[@certificate.life_area_type - 1] %>.<% end %></content><br/>
+            <content>Место смерти: <% if @certificate.death_addr %><%= @certificate.death_addr.streetAddressLine %><% end %></content><br/>
+						<content>Местность: <% if @certificate.death_area_type %><%= @certificate.death_area_type %> - <%= NsiConstant::AREA_TYPES[@certificate.death_area_type - 1] %>.<% end %></content><br/>
+						<content>Смерть наступила: <%= @certificate.death_place %> - <%= NsiConstant::DEATH_PLACES[@certificate.death_place] %>.</content><br/>
+						<content>Для детей, умерших  в возрасте от 168 час. до 1 месяца: неприменимо</content>
+						<br/>
+						<content>Для детей, умерших  в возрасте от 168 час. до 1 года: неприменимо</content>
+						<br/>
+						<content>Семейное положение: <%= @certificate.marital_status %> - <%= NsiConstant::MARITAL_STATUSES[@certificate.marital_status] %></content>
+						<br/>
+						<content>Образование: <%= @certificate.education_level %> - <%= NsiConstant::EDUCATION_LEVELS[@certificate.education_level] %></content>
+						<br/>
+						<content>Занятость: <%= @certificate.social_status %> - <%= NsiConstant::SOCIAL_STATUSES[@certificate.social_status] %></content>
+						<br/>
+						<content>Полис ОМС: <% if @certificate.policy_OMS %><%= @certificate.policy_OMS %><% else %><%= NullFlavor::RU_NAMES[@patient_OMS_nullFlavor.to_sym] %><% end %></content> 
+					</text>
+					<!-- R [1..1] кодирование ... Дата и время смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="521" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Дата и время смерти"/>
+							<value xsi:type="TS" value="<%= @certificate.death_datetime.strftime("%Y%m%d%k%M") + @time_zone %>"/>
+						</observation>
+					</entry>
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="6016" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Тип местности постоянного проживания (регистрации)"/>
+							<value xsi:type="CD" code="<%= @certificate.life_area_type %>" codeSystem="1.2.643.5.1.13.13.11.1042" codeSystemVersion="3.2" codeSystemName="Вид места жительства" displayName="<%= NsiConstant::AREA_TYPES[@certificate.life_area_type - 1] %>"/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Место смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="531" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Место смерти"/>
+							<value xsi:type="AD" <% if @certificate.death_addr.blank? %> nullFlavor="<%= @death_addr_nullFlavor %>"<% end %>><% if @certificate.death_addr %><%= render partial: "clinical_document/address", object: @certificate.death_addr %><% end %></value>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Местность смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="252" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Местность смерти"/>
+							<value xsi:type="CD" code="<%= @certificate.death_area_type %>" codeSystem="1.2.643.5.1.13.13.11.1042" codeSystemVersion="3.2" codeSystemName="Вид места жительства" displayName="<%= NsiConstant::AREA_TYPES[@certificate.death_area_type - 1] %>"/>
+						</observation>
+					</entry>
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="541" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Место наступления смерти"/>
+							<value xsi:type="CD" code="<%= @certificate.death_place %>" codeSystem="1.2.643.5.1.13.13.99.2.20" codeSystemVersion="3.1" codeSystemName="Типы мест наступления смерти" displayName="<%= NsiConstant::DEATH_PLACES[@certificate.death_place] %>"/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Доношенность детей, умерших в возрасте от 168 часов до 1 месяца, если неприменимо - ставим nullFlavor=NA-->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="612" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Доношенность умершего ребенка возрастом от 168 часов до 1 месяца жизни"/>
+							<value xsi:type="CD" codeSystem="1.2.643.5.1.13.13.99.2.18" codeSystemVersion="1.3" codeSystemName="Доношенность новорожденного" nullFlavor="NA"/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Масса тела ребёнка при рождении (в граммах)-->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="410" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Масса тела ребёнка при рождении (в граммах)"/>
+							<value xsi:type="PQ" unit="г" nullFlavor="NA"/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Которым по счёту ребёнок был рождён у матери-->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="370" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Которым по счёту ребёнок был рождён у матери"/>
+							<value xsi:type="INT" nullFlavor="NA"/>
+						</observation>
+					</entry>
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="261" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Семейное положение умершего"/>
+							<value xsi:type="CD" code="<%= @certificate.marital_status %>" codeSystem="1.2.643.5.1.13.13.99.2.15" codeSystemVersion="2.1" codeSystemName="Семейное положение" displayName="<%= NsiConstant::MARITAL_STATUSES[@certificate.marital_status] %>"/>
+						</observation>
+					</entry>
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="271" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Образование умершего"/>
+							<value xsi:type="CD" code="<%= @certificate.education_level %>" codeSystem="1.2.643.5.1.13.13.99.2.16" codeSystemVersion="2.1" codeSystemName="Классификатор образования для медицинских свидетельств" displayName="<%= NsiConstant::EDUCATION_LEVELS[@certificate.education_level] %>"/>
+						</observation>
+					</entry>
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="281" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Занятость умершего"/>
+							<value xsi:type="CD" code="<%= @certificate.social_status %>" codeSystem="1.2.643.5.1.13.13.11.1038" codeSystemVersion="8.2" codeSystemName="Социальные группы населения в учетной медицинской документации" displayName="<%= NsiConstant::SOCIAL_STATUSES[@certificate.social_status] %>"/>
+							</observation>
+					</entry>
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="5010" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Серия и номер полиса ОМС"/>
+							<value xsi:type="ST" <% if @patient_OMS_nullFlavor %> nullFlavor="<%= @patient_OMS_nullFlavor %>"<% end %>><%= @certificate.policy_OMS %></value>
+						</observation>
+					</entry>
+				</section>
+			</component>
+			<!-- R [1..1] СЕКЦИЯ: Характеристика причины смерти -->
+			<component>
+				<section>					
+					<code code="ABOUTDEAD" codeSystem="1.2.643.5.1.13.13.99.2.197" codeSystemVersion="1.8" codeSystemName="Секции электронных медицинских документов" displayName="Информация о причинах смерти"/>
+					<title>Характеристика причины смерти</title>
+					<text>
+						<content>Смерть произошла: <%= @certificate.death_kind %> - <%= NsiConstant::DEATH_KINDS[@certificate.death_kind - 1] %>.</content>
+						<br/>
+						<content>Для смерти от несчастного случая, установленная дата травмы (отравления): <% if @certificate.ext_reason_time %><%= render partial: "clinical_document/dateLocal", object: @certificate.ext_reason_time %> года, время <%= @certificate.ext_reason_time.strftime("%k:%M") %><% else %><%= NullFlavor::RU_NAMES[@ext_time_nullFlavor.to_sym] %><% end %>. Место и обстоятельства, при которых произошла травма: <%= @ext_description_nullFlavor ? NullFlavor::RU_NAMES[@ext_description_nullFlavor] : @certificate.ext_reason_description %>.</content>
+						<br/>
+						<content>Причины смерти установлены: <%= @certificate.established_medic %> - <%= NsiConstant::ESTABLISHED_MEDIC[@certificate.established_medic - 1] %></content>
+						<br/>
+						<content>На основании: <%= @certificate.basis_determining %> - <%= NsiConstant::BASIS_DETERMINING[@certificate.basis_determining - 1] %>.</content>
+						<br/>
+						<br/>
+						Причины смерти
+						<table>
+							<tbody>
+								<tr>
+									<th>I. Причины смерти:</th>
+									<th>Период времени</th>
+									<th>Код МКБ10</th>
+								</tr>
+								<tr>
+									<td>
+										<sub>а) Болезнь или состояние, напосредственно приведшее к смерти:</sub>
+										<br/><%= @certificate.a_reason && @certificate.a_reason.diagnosis.s_name %></td>
+									<td><%= @certificate.a_reason && @certificate.a_reason.terms_to_s %></td>
+									<td><%= @certificate.a_reason && @certificate.a_reason.diagnosis.ICD10 %></td>
+								</tr>
+								<tr>
+									<td>
+										<sub>б) патологическое состояние, которое привело к возникновению вышеуказанной причины:</sub>
+										<br/><%= @certificate.b_reason && @certificate.b_reason.diagnosis.s_name %></td>
+									<td><%= @certificate.b_reason && @certificate.b_reason.terms_to_s %></td>
+									<td><%= @certificate.b_reason && @certificate.b_reason.diagnosis.ICD10 %></td>
+								</tr>
+								<tr>
+									<td>
+										<sub>в) первоначальная причина смерти:</sub>
+										<br/><%= @certificate.c_reason && @certificate.c_reason.diagnosis.s_name %></td>
+									<td><%= @certificate.c_reason && @certificate.c_reason.terms_to_s %></td>
+									<td><%= @certificate.c_reason && @certificate.c_reason.diagnosis.ICD10 %></td>
+								</tr>
+								<tr>
+									<td>
+										<sub>г) внешняя причина при травмах и отравлениях:</sub>
+										<br/><%= @certificate.d_reason && @certificate.d_reason.ext_diagnosis.s_name %></td>
+									<td><%= @certificate.d_reason && @certificate.d_reason.terms_to_s %></td>
+									<td><%= @certificate.d_reason && @certificate.d_reason.ext_diagnosis.ICD10 %></td>
+								</tr>
+								<tr>
+									<th>II. Прочие важные состояния, способствовавшие смерти, но не связанные<br/> с болезнью или патологическим состоянием, приведшим к ней</th>
+									<th>Период времени</th>
+									<th>Код МКБ10</th>
+								</tr>
+								<% @certificate.death_reasons.size.times do |i| %>
+      					<%= render partial: "clinical_document/reason", locals: { reason: @certificate.death_reasons.size > i ? @certificate.death_reasons[i] : nil } %>
+    						<% end %>
+							</tbody>
+						</table>
+						<br/>
+						<br/>
+						<content>В случае смерти в результате ДТП: <% if @certificate.traffic_accident %><%= @certificate.traffic_accident %> - смерть наступила  в течение 30 суток<% if @certificate.traffic_accident == 2 %>, из них в течении 7 суток<% end %><% else %>неприменимо.<% end %></content>
+						<br/>
+						<content>Связь смерти с беременностью: неприменимо.</content>
+					</text>
+					<!-- R [1..1] кодирование ... Род смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="551" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Род смерти"/>
+							<value xsi:type="CD" code="<%= @certificate.death_kind %>" codeSystem="1.2.643.5.1.13.13.99.2.21" codeSystemVersion="5.1" codeSystemName="Род причины смерти" displayName="<%= NsiConstant::DEATH_KINDS[@certificate.death_kind - 1] %>"/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Дата и время происшествия для смерти от внешних причин -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="6019" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Дата и время проишествия для смерти от внешних причин"/>
+							<value <% if @certificate.ext_reason_time %> xsi:type="TS" value="<%= @certificate.death_datetime.strftime("%Y%m%d%k%M") + @time_zone %>"<% else %>nullFlavor="NA"<% end %>/>
+						</observation>
+					</entry>
+					<!-- R [1..1] кодирование ... Тип медицинского работника, установившего причины смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="571" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Тип медицинского работника, установившего причины смерти"/>
+							<value xsi:type="CD" code="<%= @certificate.established_medic %>" codeSystem="1.2.643.5.1.13.13.99.2.22" codeSystemVersion="4.2" codeSystemName="Тип медицинского работника, установившего причины смерти" displayName="<%= NsiConstant::ESTABLISHED_MEDIC[@certificate.established_medic - 1] %>"/>
+						</observation>
+					</entry>
+					<!-- R [1..1] кодирование ... Основания для определения причины смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="581" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Основания для определения причины смерти"/>
+							<value xsi:type="CD" code="<%= @certificate.basis_determining %>" codeSystem="1.2.643.5.1.13.13.99.2.23" codeSystemVersion="3.2" codeSystemName="Основания для определения причины смерти" displayName="<%= NsiConstant::BASIS_DETERMINING[@certificate.basis_determining - 1] %>"/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... Непосредственная причина смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="4030" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" displayName="Непосредственная причина смерти" codeSystemName="Кодируемые поля CDA документов"/>
+							<!-- [1..1] время начала патологического процесса, использованное для расчета приблизительного периода между началом патологического процесса и смертью-->
+							<effectiveTime <% if @certificate.a_reason && @certificate.a_reason.is_effective_time? %>value="<%= @certificate.a_reason.fmt_effective_time(@certificate.death_datetime) %>"<% else %>nullFlavor="<%= @certificate.a_reason && @certificate.a_reason.nullFlavor("effectiveTime") || "NA" %>"<% end %>/>
+							<value xsi:type="CD"<% if @certificate.a_reason %> code="<%= @certificate.a_reason.diagnosis.id %>" <% end %>codeSystem="1.2.643.5.1.13.13.11.1489" codeSystemVersion="2.5" codeSystemName="Алфавитный указатель к Международной статистической классификации болезней и проблем, связанных со здоровьем (10-й пересмотр, том 3)"<% if @certificate.a_reason %> displayName="<%= @certificate.a_reason.diagnosis.s_name %>"<% else %>nullFlavor="<%= @certificate.nullFlavor("a_reason") || "NA" %>"<% end %>/>
+						</observation>
+					</entry>
+					<!-- [1..1] кодирование ... патологическое состояние, которое привело к возникновению непосредственной причины смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="4035" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" displayName="Патологическое состояние, которое привело к возникновению непосредственной причины смерти" codeSystemName="Кодируемые поля CDA документов"/>
+							<effectiveTime <% if @certificate.b_reason && @certificate.b_reason.is_effective_time? %>value="<%= @certificate.b_reason.fmt_effective_time(@certificate.death_datetime) %>"<% else %>nullFlavor="<%= @certificate.b_reason && @certificate.b_reason.nullFlavor("effectiveTime") || "NA" %>"<% end %>/>
+							<value xsi:type="CD" <% if @certificate.b_reason %> code="<%= @certificate.b_reason.diagnosis.id %>" <% end %> codeSystem="1.2.643.5.1.13.13.11.1489" codeSystemVersion="2.5" codeSystemName="Алфавитный указатель к Международной статистической классификации болезней и проблем, связанных со здоровьем (10-й пересмотр, том 3)" <% if @certificate.b_reason %> displayName="<%= @certificate.b_reason.diagnosis.s_name %>"<% else %>nullFlavor="<%= @certificate.nullFlavor("b_reason") || "NA" %>"<% end %>/>
+						</observation>
+					</entry>
+					<!-- R [1..1] кодирование ... первоначальная причина смерти -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="4040" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" displayName="Первоначальная причина смерти" codeSystemName="Кодируемые поля CDA документов"/>
+							<!-- [1..1] время начала патологического процесса, использованное для расчета приблизительного периода между началом патологического процесса и смертью -->
+							<effectiveTime <% if @certificate.c_reason && @certificate.c_reason.is_effective_time? %>value="<%= @certificate.c_reason.fmt_effective_time(@certificate.death_datetime) %>"<% else %>nullFlavor="<%= @certificate.c_reason && @certificate.c_reason.nullFlavor("effectiveTime") || "NA" %>"<% end %>/>
+							<!-- R [1..1] кодирование ... наименование -->
+							<value xsi:type="CD" <% if @certificate.c_reason %>code="<%= @certificate.c_reason.diagnosis.id %>" <% end %> codeSystem="1.2.643.5.1.13.13.11.1489" codeSystemVersion="2.5" codeSystemName="Алфавитный указатель к Международной статистической классификации болезней и проблем, связанных со здоровьем (10-й пересмотр, том 3)" <% if @certificate.c_reason %> displayName="<%= @certificate.c_reason.diagnosis.s_name %>"<% else %>nullFlavor="<%= @certificate.nullFlavor("c_reason") || "NA" %>"<% end %>/>
+						</observation>
+					</entry>
+					<!--  [1..1] кодирование ... внешняя причина смерти при травмах и отравлениях -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="4045" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" displayName="Внешняя причина смерти при травмах и отравлениях" codeSystemName="Кодируемые поля CDA документов"/>
+							<effectiveTime <% if @certificate.d_reason && @certificate.d_reason.is_effective_time? %>value="<%= @certificate.d_reason.fmt_effective_time(@certificate.death_datetime) %>"<% else %>nullFlavor="<%= @certificate.d_reason && @certificate.d_reason.nullFlavor("effectiveTime") || "NA" %>"<% end %>/>
+							<value xsi:type="CD" <% if @certificate.d_reason %> code="<%= @certificate.d_reason.ext_diagnosis.id %>" <% end %> codeSystem="1.2.643.5.1.13.13.99.2.692" codeSystemVersion="1.2" codeSystemName="Алфавитный указатель к Международной статистической классификации болезней и проблем, связанных со здоровьем (10-й пересмотр, том 3, внешние причины заболеваемости и смертности)" <% if @certificate.d_reason %> displayName="<%= @certificate.d_reason.ext_diagnosis.s_name %>"<% else %>nullFlavor="<%= @certificate.nullFlavor("d_reason") || "NA" %>"<% end %>/>
+						</observation>
+					</entry>
+					<!--  [0..*] кодирование ... Прочие важные состояния, способствовавшие смерти, но не связанные с болезнью или патологическим состоянием, приведшим к ней. Если кода МКБ10 нет - ставим nullFlavor -->					
+					<% @certificate.death_reasons do |reason| %>
+      			<%= render partial: "clinical_document/reason_entry", object: procedure %>
+    			<% end %>						
+					<!--  [1..1] кодирование ... Связь смерти с ДТП, если неприменимо - ставим nullFlavor=NA -->
+					<entry>						
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="601" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Варианты связи смерти с ДТП"/>
+							<value xsi:type="CD" <% if @certificate.traffic_accident %>code="1"<% end %> codeSystem="1.2.643.5.1.13.13.99.2.24" codeSystemVersion="1.4" codeSystemName="Связь смерти с ДТП" <% if @certificate.traffic_accident %>displayName="смерть наступила - в течение 30 суток"<% else %>nullFlavor="NA"<% end %>/>
+							<% if @certificate.traffic_accident && @certificate.traffic_accident == 2 %>
+							<value xsi:type="CD" code="2" codeSystem="1.2.643.5.1.13.13.99.2.24" codeSystemVersion="1.4" codeSystemName="Связь смерти с ДТП" displayName="из них в течение 7 суток"/>
+							<% end %>
+						</observation>					
+					</entry>
+					<!-- [1..1] кодирование ... Связь смерти с беременностью, если неприменимо - ставим nullFlavor=NA -->
+					<entry>
+						<observation classCode="OBS" moodCode="EVN">
+							<code code="591" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" codeSystemName="Кодируемые поля CDA документов" displayName="Варианты связи смерти с беременностью"/>
+							<value xsi:type="CD" <% if @certificate.pregnancy_connection %>code="<%= @certificate.pregnancy_connection %>"<% end %> codeSystem="1.2.643.5.1.13.13.99.2.25" codeSystemVersion="1.4" codeSystemName="Связь смерти с беременностью" <% if @certificate.pregnancy_connection %>displayName=""<% else %>nullFlavor="NA"<% end %>/>
+						</observation>
+					</entry>
+				</section>
+			</component>
+    </structuredBody>
+  </component>  

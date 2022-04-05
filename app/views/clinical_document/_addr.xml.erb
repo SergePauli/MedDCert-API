@@ -1,0 +1,16 @@
+	<streetAddressLine><%= @patient_address.streetAddressLine %></streetAddressLine>
+			<address:Type xsi:type="CD" code="1" codeSystem="1.2.643.5.1.13.13.11.1504" codeSystemVersion="1.3" codeSystemName="Тип адреса пациента" displayName="Адрес по месту жительства (постоянной регистрации)"/>
+			<address:stateCode xsi:type="CD" code="<%= @patient_address.state %>" codeSystem="1.2.643.5.1.13.13.99.2.206" codeSystemVersion="6.2" codeSystemName="Субъекты Российской Федерации" displayName="<%= Address.region_name(@patient_address.state)[:name] %>"/>
+			<postalCode><%= @patient_address.postalCode %></postalCode>				
+			<% if @patient_address.aoGUID %>
+  		<fias:Address>		
+				<fias:AOGUID><%= @patient_address.aoGUID %></fias:AOGUID>
+				<% if @patient_address.houseGUID %>
+				<fias:HOUSEGUID><%= @patient_address.houseGUID %></fias:HOUSEGUID>
+    		<% else %>
+    		<fias:HOUSEGUID nullFlavor="NA" />
+    		<% end %>
+			</fias:Address>
+  		<% else %>
+   	<fias:Address nullFlavor="NA" />
+  	<% end %>

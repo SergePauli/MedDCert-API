@@ -1,0 +1,15 @@
+<streetAddressLine><%= address.streetAddressLine %></streetAddressLine>	
+	    <address:stateCode xsi:type="CD" code="<%= address.state %>" codeSystem="1.2.643.5.1.13.13.99.2.206" codeSystemVersion="6.2" codeSystemName="Субъекты Российской Федерации" displayName="<%= Address.region_name(address.state)[:name] %>"/>
+	    <postalCode><%= address.postalCode %></postalCode>				
+	    <% if address.aoGUID %>
+        <fias:Address>		
+		      <fias:AOGUID><%= address.aoGUID %></fias:AOGUID>
+		      <% if address.houseGUID %>
+		      <fias:HOUSEGUID><%= address.houseGUID %></fias:HOUSEGUID>
+          <% else %>
+          <fias:HOUSEGUID nullFlavor="NA" />
+          <% end %>
+	      </fias:Address>
+      <% else %>
+      <fias:Address nullFlavor="NA" />
+      <% end %>

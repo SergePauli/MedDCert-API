@@ -1,0 +1,25 @@
+<!-- R [1..1] Уникальный идентификатор медицинской организации, констатировавшей факт смерти -->
+<id root="<%= organization.oid %>"/>
+  <!-- [1..1] Лицензия на осуществление медицинской деятельности. -->
+  <% if organization.license %>
+	<id root="1.2.643.5.1.13.2.1.1.1504.101" extension="<%= organization.license %>" assigningAuthorityName="<%= organization.license_data %>"/>
+  <% else %>
+  <id root="1.2.643.5.1.13.2.1.1.1504.101" nullFlavor="NA"/>
+  <% end %>
+  <% if organization.okpo %>	
+	<identity:Okpo xsi:type="ST"><%= organization.okpo %></identity:Okpo>
+  <% else %>
+  <identity:Okpo nullFlavor="NA">
+  <% end %>	
+	<name><%= organization.name_full %></name>
+  <% organization.contacts.each do |contact| %>
+    <% if contact.telcom_value.include?("tel") || contact.telcom_value.include?("fax") %>
+  <telecom value="<%= contact.telcom_value %>" use="WP"/>
+    <% else %>
+  <telecom value="<%= contact.telcom_value %>"/>  
+    <% end %>
+  <% end %>  
+	<!-- R [1..1] Адрес организации, констатировавшей факт смерти -->
+	<addr>
+		<%= render partial: "clinical_document/address", object: organization.address %>
+	</addr>

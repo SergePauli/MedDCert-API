@@ -1,0 +1,14 @@
+<entryRelationship typeCode="CAUS">
+	<procedure classCode="PROC" moodCode="EVN">
+			<code code="<%= procedure.medical_serv.s_code %>" displayName="<%= procedure.medical_serv.name %>" codeSystem="1.2.643.5.1.13.13.11.1070" codeSystemVersion="2.6" codeSystemName="Номенклатура медицинских услуг"/>
+      <% if procedure.text_value %>
+			<!-- [0..1] Наименование операции текстом, если оно отличается от расшифровки кода номенклатуры услуг-->
+      <text><%= procedure.text_value %></text>
+      <% end %>
+			<statusCode code="completed"/>
+      <% if procedure.effectiveTime %>
+			<!-- [0..1] дата операции -->      
+			<effectiveTime value="<%= procedure.effectiveTime.strftime("%Y%m%d") %>"/>
+      <% end %>
+	</procedure>
+</entryRelationship>

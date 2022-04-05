@@ -1,0 +1,11 @@
+<entry>
+	<observation classCode="OBS" moodCode="EVN">
+	  <code code="4050" codeSystem="1.2.643.5.1.13.13.99.2.166" codeSystemVersion="1.73" displayName="Прочие важные состояния, способствовавшие смерти" codeSystemName="Кодируемые поля CDA документов"/>
+	  <effectiveTime <% if reason_entry.is_effective_time? %>value="<%= reason_entry.fmt_effective_time(@certificate.death_datetime) %>"<% else %>nullFlavor="<%= reason_entry && reason_entry.nullFlavor("effectiveTime") || "NA" %>"<% end %>/>
+	  <value xsi:type="CD" <% if reason_entry.diagnosis %> code="<%= reason_entry.diagnosis.id %>" codeSystem="1.2.643.5.1.13.13.11.1489" codeSystemVersion="2.5" codeSystemName="Алфавитный указатель к Международной статистической классификации болезней и проблем, связанных со здоровьем (10-й пересмотр, том 3)" displayName="<%= reason_entry.diagnosis.s_name %>"<% else %>nullFlavor="NA"<% end %>/>
+	  <!-- [0..*] код операции -->
+	  <% reason_entry.procedures do |procedure| %>
+      <%= render partial: "clinical_document/procedure", object: procedure %>
+    <% end %>    
+	</observation>
+</entry>

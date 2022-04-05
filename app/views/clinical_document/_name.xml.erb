@@ -1,0 +1,7 @@
+  <family><%= name.family %></family>
+      <given><%= name.given_1 %></given>
+      <% if name.given_2 %>
+      <given><%= name.given_2 %></given>
+      <% else %>
+      <given nullFlavor="NA"/>
+      <% end %>

@@ -1,0 +1,20 @@
+<identity:IdentityDoc>
+      <identity:IdentityCardTypeId xsi:type="CD" code="<%= identity.identity_card_type.id %>" codeSystem="1.2.643.5.1.13.13.99.2.48" codeSystemVersion="2.1" codeSystemName="Документы, удостоверяющие личность" displayName="<%= identity.identity_card_type.name %>"/>     
+<% if identity.series %>
+      <identity:Series xsi:type="ST"><%= identity.series.gsub(" ", "") %></identity:Series>
+<% else %>
+      <identity:Series xsi:type="ST" nullFlavor="<%= @patient_series_nullFlavor %>"/>
+  <% end %>
+      <identity:Number xsi:type="ST"><%= identity.number %></identity:Number>
+  <% if identity.issueOrgName %>    
+      <identity:IssueOrgName xsi:type="ST"><%= identity.issueOrgName %></identity:IssueOrgName>
+  <% else %>
+      <identity:IssueOrgName xsi:type="ST" nullFlavor="<%= @patient_issueOrgName_nullFlavor %>"/>
+  <% end %>
+  <% if identity.issueOrgCode %>
+      <identity:IssueOrgCode xsi:type="ST"><%= identity.issueOrgCode %></identity:IssueOrgCode>
+  <% else %>
+      <identity:IssueOrgName xsi:type="ST" nullFlavor="<%= @patient_issueOrgCode_nullFlavor %>"/>
+  <% end %>
+      <identity:IssueDate xsi:type="TS" value="<%= identity.issueDate.strftime("%Y%m%d") %>"/>
+    </identity:IdentityDoc>

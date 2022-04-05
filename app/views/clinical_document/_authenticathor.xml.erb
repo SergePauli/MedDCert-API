@@ -1,0 +1,31 @@
+        <!-- [1..1] Уникальный идентификатор врача в МИС -->
+  <id root="<%= @root %>.70" extension="<%= authenticathor.doctor.id %>"/>
+    <!-- R [1..1] СНИЛС -->
+    <id root="1.2.643.100.3" extension="<%= authenticathor.doctor.person.SNILS.gsub(" ", "").gsub("-", "") %>"/>
+	  <!-- R [1..1] Код должности-->
+	  <code code="<%= authenticathor.doctor.position.id %>" codeSystem="1.2.643.5.1.13.13.99.2.700" codeSystemVersion="1.1" codeSystemName="Должности медицинских работников для ФРМСС" displayName="<%= authenticathor.doctor.position.name %>"></code>
+    <!-- [0..1] Адрес -->
+    <% if authenticathor.doctor.person.address %>
+	  <addr>
+      <%= render partial: "clinical_document/address", object: authenticathor.doctor.person.address %>
+    </addr>
+    <% end %>
+    <% authenticathor.doctor.person.contacts.each do |contact| %>
+      <% if contact.telcom_value.include?("tel:+79") %>
+    <telecom value="<%= contact.telcom_value %>" use="MC"/>
+      <% else %>
+    <telecom value="<%= contact.telcom_value %>"/>  
+      <% end %>
+    <% end %>
+    <assignedPerson>
+		  <!-- R [1..1] Фамилия, Имя, Отчество  -->
+      <name>  
+        <%= render partial: "clinical_document/name", object: authenticathor.doctor.person.person_name %>     
+      </name>
+    </assignedPerson>  
+    <!-- [0..1] Место работы -->
+    <% if authenticathor.doctor.organization %>
+	  <representedOrganization> 
+      <%= render partial: "clinical_document/organization", object: authenticathor.doctor.organization %>
+    </representedOrganization>
+    <% end %>
