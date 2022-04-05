@@ -1,4 +1,4 @@
-class Identity < ApplicationRecord
+class Identity < NullFlavorRecord
   # Связь с записью типа документа УЛ
   belongs_to :identity_card_type
   # Заполнители причин отсутствия
