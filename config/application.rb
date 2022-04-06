@@ -45,8 +45,17 @@ module CleanAPI
     # Endpoint base address
     config.base_url = "http://#{config.host}"
 
+    # Endpoint FIAS address service
+    config.fias_url = "http://localhost:5050/fias"
+
     # code of russia region
     config.region = "28"
+
+    # номер МИС для CDA
+    config.number_MIS = "3"
+
+    # номер экземляра МИС для CDA
+    config.number_MIS_instance = 1
 
     # your userkey from NSI.minzdrav.ru
     config.nsi_token = ENV["NSI_TOKEN"]
