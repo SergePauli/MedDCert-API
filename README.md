@@ -5,7 +5,8 @@ _(Ruby on Rails REST-API сервис для CRUD операций с данны
 ### Compatibility
   MedDCert-API tested to work with:
 * Ruby version 2.7.3 for script running
-* PostgreSQL13 as Database
+* PostgreSQL13 as Database 
+* access-token from nsi.rosminzdrav.ru for run db initialization
 _(На стадии инициализации требуется токен для загрузки справочников с ресурса nsi.rosminzdrav.ru)_
 * requered fias-api (temporary)
 
@@ -13,8 +14,8 @@ _(На стадии инициализации требуется токен д�
 * config/puma.rb - defaul server ports, thread options, environment config
 _(можно настроить порт, режим запуска сервиса)_
 
-* config/initializers/cors.rb - Handle Cross-Origin Resource Sharing (CORS)
-#### Read more: https://github.com/cyu/rack-cors
-example:
-  Rails.application.config.middleware.insert_before 0, Rack::Cors do allow do
+* config/initializers/cors.rb - Handle Cross-Origin Resource      Sharing (CORS) Read more: https://github.com/cyu/rack-cors
+
+  example:
+    Rails.application.config.middleware.insert_before 0, Rack::Cors do allow do
     origins "localhost:3000", "127.0.0.1:3000",
