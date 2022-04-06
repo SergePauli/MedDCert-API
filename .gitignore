@@ -5,39 +5,35 @@
 #   git config --global core.excludesfile '~/.gitignore_global'
 
 # Ignore bundler config.
-/.bundle
+.bundle
 
 # Ignore the scheme .
-/db/schema.rb
+db/schema.rb
 
 
 # Ignore all logfiles and tempfiles.
-/log/*
-/tmp/*
+log/*
+tmp/*
 !/log/.keep
 !/tmp/.keep
 
 # Ignore pidfiles, but keep the directory.
-/tmp/pids/*
+tmp/pids/*
 !/tmp/pids/
 !/tmp/pids/.keep
 
-# Ignore uploaded files in development.
-/storage/*
-!/storage/.keep
-.byebug_history
 
 # Ignore master key for decrypting credentials and more.
-/config/master.key
+config/master.key
 
 # Ignore VSCODE settings
-/.vscode/*
+.vscode/*
 
 # Ignore Docker file
-/Dockerfile
+Dockerfile
 
 # Ignore db config
-/config/database.yml
+config/database.yml
 # Ignore application config
-/config/application.rb
-/config/initializers/cors.rb
+config/initializers/cors.rb
+db/schema.rb
