@@ -36,4 +36,3 @@ Dockerfile
 config/database.yml
 # Ignore application config
 config/initializers/cors.rb
-db/schema.rb
