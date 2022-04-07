@@ -11,11 +11,11 @@ _(На стадии инициализации требуется токен д�
 * requered fias-api (temporary)
 
 ### Configuration
-* config/puma.rb - defaul server ports, thread options, environment config
-_(можно настроить порт, режим запуска сервиса)_
+  * config/puma.rb - defaul server ports, thread options, environment config_(можно настроить порт, режим запуска сервиса)_
 
-* config/initializers/cors.rb - Handle Cross-Origin Resource      Sharing (CORS) Read more: https://github.com/cyu/rack-cors
+  * config/initializers/cors.rb - Handle Cross-Origin Resource      Sharing (CORS) Read more: https://github.com/cyu/rack-cors
 
-  example:
+    example:
+    
     Rails.application.config.middleware.insert_before 0, Rack::Cors do allow do
     origins "localhost:3000", "127.0.0.1:3000",
