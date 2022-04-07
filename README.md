@@ -19,4 +19,47 @@ _(Ruby on Rails REST-API сервис для CRUD операций с данны
     example:
 
     Rails.application.config.middleware.insert_before 0, Rack::Cors do allow do
-    origins "localhost:3000", "127.0.0.1:3000",
+    origins "localhost:3000", "your_frontend_host:3000",
+
+  * config/application.rd - main settings
+    
+    # Frontend url
+    config.client_url = "http://your_frontend_host:3000"
+    # Host name and port
+    config.host = "your_backend_host:5000"
+    # Endpoint base address
+    config.base_url = "http://#{config.host}"
+
+    # code of russia region
+    config.region = "28" _(Амурская область)_
+
+    # your userkey from NSI.minzdrav.ru
+    config.nsi_token = ENV["NSI_TOKEN"]   
+
+    # ActionMailer Config
+
+    # c какого адреса рассылать уведомления
+    config.from_mail = ENV["MAIL_USER"]
+
+    #SMTP server
+    ActionMailer::Base.smtp_settings = {
+      address: "smtp.yandex.ru",
+      domain: "your_domain.ru",
+      port: 465,
+      user_name: config.from_mail,
+      password: ENV.fetch("MAIL_PASS"),
+      authentication: "plain",
+      ssl: true,
+    }    
+
+    # почта администратора приложения
+    config.admin_mail = "admin@your_domain.ru"
+
+### Initialization    
+  1. run `bin/setup`, and then, depending on the size of the input data, you will have to wait, while the database is being created from the imported files _(запускаем создание базы, и импорт данных)_
+    
+    $ bin/setup
+
+  2. start server:
+    
+    $ rails s
