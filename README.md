@@ -24,26 +24,33 @@ _(Ruby on Rails REST-API сервис для CRUD операций с данны
   * config/application.rd - main settings
     
   Frontend url 
+
     config.client_url = "http://your_frontend_host:3000"
-    
-  Host name and port 
+   
+  Host name and port
+
     config.host = "your_backend_host:5000"
     
-  Endpoint base address 
+  Endpoint base address
+
     config.base_url = "http://#{config.host}"
 
-  Code of russia region 
+  Code of russia region
+
     config.region = "28" _(Амурская область)_
 
-  your userkey from NSI.minzdrav.ru 
+  your userkey from NSI.minzdrav.ru
+
     config.nsi_token = ENV["NSI_TOKEN"]   
 
   ActionMailer Config
   
-  c какого адреса рассылать уведомления 
+  c какого адреса рассылать уведомления
+
     config.from_mail = ENV["MAIL_USER"]
 
   SMTP server
+  
     ActionMailer::Base.smtp_settings = {
       address: "smtp.yandex.ru",
       domain: "your_domain.ru",
