@@ -1,4 +1,4 @@
-<li>Фамилия, имя, отчество умершего(ей) <span class='value value-long'><%= patient_fio_sex_bd.person.name %></span></li>  
+<li>Фамилия, имя, отчество умершего(ей) <span class='value value-long'><% if patient_fio_sex_bd.person %><%= patient_fio_sex_bd.person.name %><% else %>НЕИЗВЕСТНО<% end %></span></li>  
 <li>Пол <% NsiConstant::GENDERS.each_with_index do |name, index| %>
           <%= render partial: "print/optionPrint",
                      locals: { selected: patient_fio_sex_bd.gender === index + 1, option: name, idx: index + 1 } %>    
