@@ -1,7 +1,7 @@
 # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 Rails.application.routes.draw do
-  get "clinical_document/adult/:id", controller: "rest_api/v1/clinical_document", action: "adult"
-  get "clinical_document/kid/:id", controller: "rest_api/v1/clinical_document", action: "kid"
+  get "REST_API/v1/clinical_document/:id", controller: "rest_api/v1/clinical_document", action: "adult"
+  get "REST_API/v1/clinical_document/kid/:id", controller: "rest_api/v1/clinical_document", action: "kid"
 
   # Авторизация
   scope "REST_API/v1/auth", controller: "rest_api/v1/auth/authentication" do

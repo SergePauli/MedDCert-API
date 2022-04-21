@@ -19,7 +19,7 @@ class RestApi::V1::ClinicalDocumentController < RestApi::DocumentController
   private
 
   def prepare_data
-    find_record
+    super
     @time_zone = DateTime.now.to_s.slice(-6, 6).gsub(":", "")
     @number = @certificate.number
     @issueDate = @certificate.issue_date || Date.today()
@@ -28,6 +28,7 @@ class RestApi::V1::ClinicalDocumentController < RestApi::DocumentController
     @death_addr_nullFlavor = @patient.nullFlavor("death_addr") || "UNK" unless @certificate.death_addr
     @ext_time_nullFlavor = @certificate.nullFlavor("ext_reason_time") || "NA" unless @certificate.ext_reason_time
     @ext_description_nullFlavor = @certificate.nullFlavor("ext_reason_description") || "NA" unless @certificate.ext_reason_description
+    @mother_addr_nullFlavor = @related_subject.nullFlavor("addr") || "UNK" if @related_subject && @related_subject.addr.blank?
     @root = "#{@certificate.custodian.oid}.100.#{Rails.configuration.number_MIS}.#{Rails.configuration.number_MIS_instance}"
     if @patient.person
       @person = @patient.person

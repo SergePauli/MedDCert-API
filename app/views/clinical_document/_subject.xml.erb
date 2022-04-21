@@ -1,0 +1,17 @@
+<!--Указание на мать ребенка-->
+<subject>
+	<relatedSubject classCode="PRS">
+		<!-- R [1..1] Тип родственной связи -->
+		<code code="1" codeSystem="1.2.643.5.1.13.13.99.2.14" codeSystemVersion="1.1" codeSystemName="Родственные и иные связи" displayName="Мать"/>
+		<!-- [1..1] кодирование адреса -->
+		<addr <% unless subject.addr %> nullFlavor="<%= @mother_addr_nullFlavor %>" <% end %>>
+			<%= render partial: "clinical_document/address", object: subject.addr %>
+		</addr>
+		<subject>
+			<name>
+       <%= render partial: "clinical_document/name", object: subject.person_name %>
+			</name>
+			<birthTime <% if subject.birthTime %>value="<%= render partial: "clinical_document/dateLocal", object: subject.birthTime %>"<% else %>nullFlavor="UNK"<% end %>/>
+		</subject>
+	</relatedSubject>
+</subject>

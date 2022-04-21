@@ -25,5 +25,7 @@ class RestApi::DocumentController < ActionController::Base
 
   def prepare_data
     find_record
+    @child_info = @certificate.child_info || false
+    @related_subject = @child_info && @certificate.child_info.related_subject || false
   end
 end
