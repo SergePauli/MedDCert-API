@@ -79,6 +79,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
     if res && @res.save
       Audit.import audits if !audits.blank?
       r_options = {}
+      find_record
       if params[:render_options].blank?
         render json: @res
       else
