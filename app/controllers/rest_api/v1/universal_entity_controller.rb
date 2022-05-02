@@ -75,10 +75,10 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
         audits.push(Audit.new(guid: @res.guid, action: :updated, table: params[:model_name], field: audit[:field], after: audit[:after], before: audit[:before], severity: :success, summary: @res.to_s, detail: audit[:detail], user_id: @current_user[:data][:id]))
       end
     end
-    res = @res.update(permitted_params)
-    if res && @res.save
+    if @res.update(permitted_params)
       Audit.import audits if !audits.blank?
       r_options = {}
+      find_record
       if params[:render_options].blank?
         render json: @res
       else

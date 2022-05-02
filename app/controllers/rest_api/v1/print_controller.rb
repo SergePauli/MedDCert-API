@@ -128,7 +128,7 @@ class RestApi::V1::PrintController < RestApi::DocumentController
     case fias_item["level"]
     when "Street"
       @address[:street] = "#{fias_item["name"]} #{(fias_item["shortname"].include? "ул") ? "" : fias_item["shortname"]}"
-    when "Town"
+    when "Town", "RailWayObject"
       @address[:town] = "#{fias_item["shortname"]} #{fias_item["name"]}"
     when "City"
       @address[:city] = fias_item["name"]
