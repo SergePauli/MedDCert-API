@@ -41,10 +41,10 @@ module CleanAPI
     # Frontend url
     config.client_url = "http://localhost:3000"
     # Host name and port
-    config.host = "localhost:5000"
+    config.host = "localhost"
     # Endpoint base address
-    config.base_url = "http://#{config.host}"
-
+    config.base_url = "http://#{config.host}:5000"
+    config.fias_url = "http://#{config.host}:5050/fias"
     # code of russia region
     config.region = "28"
 
