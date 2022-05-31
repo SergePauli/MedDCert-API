@@ -1,4 +1,4 @@
 число <span class='value'>
-  <%= datePrint && !empty ? datePrint.strftime("%-d") : empty ? "" : "---" %></span>
-месяц <span class='value'><%= datePrint && !empty ? ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"][datePrint.month - 1] : empty ? "" : "------" %></span>
-год <span class='value'><%= datePrint && !empty ? datePrint.strftime("%Y") : empty ? "" : "------" %></span>
+  <%= datePrint && !(empty || year > 0) ? datePrint.strftime("%-d") : empty ? "" : "---" %></span>
+месяц <span class='value'><%= datePrint && !(empty || year > 0) ? ["январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", "октябрь", "ноябрь", "декабрь"][datePrint.month - 1] : empty ? "" : "------" %></span>
+год <span class='value'><%= datePrint && !(empty || year > 0) ? datePrint.strftime("%Y") : year > 0 ? year : empty ? "" : "------" %></span>

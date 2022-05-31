@@ -4,4 +4,4 @@
                      locals: { selected: patient_fio_sex_bd.gender === index + 1, option: name, idx: index + 1 } %>    
          <% end %>
 </li>          
-<li>Дата рождения: <%= render partial: "print/datePrint", object: patient_fio_sex_bd.birth_date, locals: { empty: false } %></li>
+<li>Дата рождения: <%= render partial: "print/datePrint", object: patient_fio_sex_bd.birth_date, locals: { year: patient_fio_sex_bd.birth_year, empty: false } %></li>
