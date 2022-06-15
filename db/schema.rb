@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_01_12_015133) do
+ActiveRecord::Schema.define(version: 2022_06_05_123315) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -82,9 +82,6 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
   create_table "certificates", comment: "таблица свидетельств", force: :cascade do |t|
     t.date "issue_date", comment: "дата выдачи свидетельства"
     t.bigint "patient_id", comment: "id данных умершего"
-    t.bigint "author_id", comment: "id данных авторства"
-    t.bigint "legal_authenticator_id", comment: "id данных заверителя"
-    t.bigint "authenticator_id", comment: "id данных проверяющего"
     t.bigint "custodian_id", comment: "id медорганизации"
     t.string "series", null: false, comment: "серия свидетельства"
     t.string "number", null: false, comment: "номер свидетельства"
@@ -108,28 +105,19 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.string "ext_reason_description", comment: "Обстоятельства смерти от внешних причин"
     t.integer "established_medic", limit: 2, comment: "enum кто установил причину 1.2.643.5.1.13.13.99.2.22"
     t.integer "basis_determining", limit: 2, comment: "enum основание для уст. причины 1.2.643.5.1.13.13.99.2.23"
-    t.bigint "a_reason_id", comment: "а) Болезнь или состояние, напосредственно приведшее к смерти"
-    t.bigint "b_reason_id", comment: "б) Патологическое состояние, которое привело к возникновению вышеуказанной причины"
-    t.bigint "c_reason_id", comment: "в) первоначальная причина смерти"
-    t.bigint "d_reason_id", comment: "г) внешняя причина при травмах и отравлениях"
     t.integer "traffic_accident", limit: 2
     t.integer "pregnancy_connection", limit: 2
     t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["a_reason_id"], name: "index_certificates_on_a_reason_id"
-    t.index ["authenticator_id"], name: "index_certificates_on_authenticator_id"
-    t.index ["author_id"], name: "index_certificates_on_author_id"
-    t.index ["b_reason_id"], name: "index_certificates_on_b_reason_id"
-    t.index ["c_reason_id"], name: "index_certificates_on_c_reason_id"
+    t.string "reason_ACME", limit: 6
+    t.boolean "approval_e_version"
     t.index ["custodian_id"], name: "index_certificates_on_custodian_id"
-    t.index ["d_reason_id"], name: "index_certificates_on_d_reason_id"
     t.index ["death_area_type"], name: "index_certificates_on_death_area_type"
     t.index ["death_kind"], name: "index_certificates_on_death_kind"
     t.index ["death_place"], name: "index_certificates_on_death_place"
     t.index ["education_level"], name: "index_certificates_on_education_level"
     t.index ["issue_date"], name: "index_certificates_on_issue_date"
-    t.index ["legal_authenticator_id"], name: "index_certificates_on_legal_authenticator_id"
     t.index ["marital_status"], name: "index_certificates_on_marital_status"
     t.index ["number"], name: "index_certificates_on_number"
     t.index ["patient_id"], name: "index_certificates_on_patient_id"
@@ -165,7 +153,13 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.string "type", comment: "тип причины, обеспечение STI"
     t.bigint "certificate_id", comment: "ссылка на свидетельство"
     t.bigint "diagnosis_id", null: false, comment: "код мкб-10"
-    t.datetime "effective_time", comment: "период времени"
+    t.datetime "effective_time", comment: "дата возникновения состояния"
+    t.integer "years", limit: 2, comment: "длительность состояния, лет"
+    t.integer "months", limit: 2, comment: "длительность состояния, месяцев"
+    t.integer "weeks", limit: 2, comment: "длительность состояния, недель"
+    t.integer "days", limit: 2, comment: "длительность состояния, дней"
+    t.integer "hours", limit: 2, comment: "длительность состояния, часов"
+    t.integer "minutes", limit: 2, comment: "длительность состояния, минут"
     t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -207,6 +201,13 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.bigint "certificate_id"
     t.bigint "ext_diagnosis_id", null: false, comment: "код мкб-10"
     t.datetime "effective_time", comment: "период времени"
+    t.integer "years", limit: 2, comment: "длительность состояния, лет"
+    t.integer "months", limit: 2, comment: "длительность состояния, месяцев"
+    t.integer "weeks", limit: 2, comment: "длительность состояния, недель"
+    t.integer "days", limit: 2, comment: "длительность состояния, дней"
+    t.integer "hours", limit: 2, comment: "длительность состояния, часов"
+    t.integer "minutes", limit: 2, comment: "длительность состояния, минут"
+    t.uuid "guid", default: -> { "gen_random_uuid()" }, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["certificate_id"], name: "index_external_reasons_on_certificate_id"
@@ -219,7 +220,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.string "number", limit: 50, comment: "номер документа"
     t.string "issueOrgName", comment: "кем выдан документ"
     t.string "issueOrgCode", limit: 50, comment: "код подразделения"
-    t.string "issueDate", comment: "дата выдачи"
+    t.date "issueDate", comment: "дата выдачи"
     t.uuid "parent_guid", comment: "ID родительского элемента"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -270,8 +271,21 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.string "delete_reason"
     t.integer "organization_type", limit: 2
     t.uuid "guid", null: false
+    t.string "sm_code", limit: 2, default: "00", null: false
     t.index ["guid"], name: "index_organizations_on_guid"
     t.index ["oid"], name: "index_organizations_on_oid"
+  end
+
+  create_table "participants", comment: "получатели свидетельств и копий", force: :cascade do |t|
+    t.bigint "certificate_id", null: false, comment: "Свидетельство"
+    t.uuid "person_id", null: false, comment: "ID Персональных данных"
+    t.date "receipt_date", comment: "Дата получения свидетельства или копии"
+    t.string "description", comment: "Дополнительная информация о получателе"
+    t.boolean "original", default: true, null: false, comment: "Признак оригинала"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["certificate_id"], name: "index_participants_on_certificate_id"
+    t.index ["person_id"], name: "index_participants_on_person_id"
   end
 
   create_table "patients", comment: "информация об умершем", force: :cascade do |t|
@@ -357,6 +371,7 @@ ActiveRecord::Schema.define(version: 2022_01_12_015133) do
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.integer "user_number", default: 0
+    t.integer "login_times"
     t.index ["email"], name: "index_users_on_email"
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["person_name_id"], name: "index_users_on_person_name_id"
