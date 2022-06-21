@@ -8,7 +8,7 @@
       <%= render partial: "print/optionPrint",
                  locals: { selected: @certificate.death_kind === index + 1, option: name, idx: index + 1 } %>    
       <% end %></li> 
-     <li>В случае смерти от несчастного случая, убийства, самоубийства, от военных и террористических действий, при    неустановленном роде смерти - указать дату травмы (отравления):<%= render partial: "print/datePrint", object: @certificate.ext_reason_time, locals: { empty: false, year: false } %>
+     <li>В случае смерти от несчастного случая, убийства, самоубийства, от военных и террористических действий, при    неустановленном роде смерти - указать дату травмы (отравления):<%= render partial: "print/datePrint", object: @certificate.ext_reason_time, locals: { empty: false, year: nil } %>
         <%= render partial: "print/timePrint", object: @is_ext_time ? @certificate.ext_reason_time : false %>
         , а также место и обстоятельства, при которых произошла травма (отравление) <span class='value value-long'><%= @certificate.ext_reason_description %></span></li> 
      <li>Причины смерти установлены: <% ["врачом, только установившим смерть", " лечащим врачом", "фельдшером, акушеркой", "врачом-патологоанатомом", "врачом - судебно-медицинским экспертом"].each_with_index do |name, index| %>
