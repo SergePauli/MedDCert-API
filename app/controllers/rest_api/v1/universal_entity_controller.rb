@@ -76,6 +76,7 @@ class RestApi::V1::UniversalEntityController < RestApi::V1::ApplicationControlle
       end
     end
     if @res.update(permitted_params)
+      @res.touch
       Audit.import audits if !audits.blank?
       r_options = {}
       find_record

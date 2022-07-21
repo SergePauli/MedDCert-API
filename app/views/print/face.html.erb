@@ -7,13 +7,13 @@
   <%= render partial: "print/head" %>
   <ol start="1">
     <%= render partial: "print/patient_fio_sex_bd", object: @certificate.patient %> 
-    <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { empty: false } %>
+    <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { year: @certificate.death_year || 0, empty: false } %>
         <%= render partial: "print/timePrint", object: @is_death_time ? @certificate.death_datetime : false %></li>
     <li>Регистрация по месту жительства (пребывания) умершего(ей): 
     <%= render partial: "print/addressPrint", locals: @regAddress %></li>
     <li><%= render partial: "print/death_place", object: @certificate.death_place %></li>     
     Для детей, умерших в возрасте до 1 года:<br/>  
-    <li>Дата рождения: <%= render partial: "print/datePrint", object: @certificate.patient.birth_date, locals: { empty: @days.blank? } %>         
+    <li>Дата рождения: <%= render partial: "print/datePrint", object: @certificate.patient.birth_date, locals: { year: @certificate.patient.birth_year || 0, empty: @days.blank? } %>         
         число дней <span class='value'><%= @days %></span>
         число месяцев<span class='value'><%= @month %></span> жизни 
     </li>
@@ -66,7 +66,7 @@
     </li>
     <li>СНИЛС <span class='value value-long'><%= @certificate.patient.person && @certificate.patient.person.SNILS %></span></li>
     <li>Полис ОМС <span class='value value-long'><%= @certificate.policy_OMS %></span></li>
-    <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { empty: false } %>
+    <li>Дата смерти: <%= render partial: "print/datePrint", object: @certificate.death_datetime, locals: { year: @certificate.death_year || 0, empty: false } %>
         <%= render partial: "print/timePrint", object: @certificate.death_datetime %></li>
     <li>Регистрация по месту жительства (пребывания) умершего(ей): 
     <%= render partial: "print/addressPrint", locals: @regAddress %></li>

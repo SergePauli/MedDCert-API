@@ -80,10 +80,15 @@ class RestApi::V1::Auth::AuthenticationController < RestApi::V1::ApplicationCont
   end
 
   def set_tokens
-    dto = { id: @user.id, email: @user.email, roles: @user.roles, organization_id: @user.organization_id, activated: @user.activated }
-    tokens = JsonWebToken.generate_tokens(dto)
-    JsonWebToken.save_token(@user.id, tokens[:refresh])
-    cookies[:refresh_token] = { value: tokens[:refresh], expires: 144.hour, httponly: true }
-    render json: { user: dto, tokens: tokens }, status: :ok
+    dto = { id: @user.id, email: @user.email, roles: @user.roles, organization_id: @user.organization_id, activated: @user.activated, logged: @user.updated_at }
+    @user.login_times = @user.login_times ? @user.login_times + 1 : 0
+    if @user.save
+      tokens = JsonWebToken.generate_tokens(dto)
+      JsonWebToken.save_token(@user.id, tokens[:refresh])
+      cookies[:refresh_token] = { value: tokens[:refresh], expires: 144.hour, httponly: true }
+      render json: { user: dto, tokens: tokens }, status: :ok
+    else
+      raise ApiError.new("Ошибка авторизации 4", :unauthorized)
+    end
   end
 end
