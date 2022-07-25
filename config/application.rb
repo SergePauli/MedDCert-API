@@ -39,7 +39,7 @@ module CleanAPI
     config.api_only = true
 
     # Frontend url
-    config.client_url = "http://localhost:3000"
+    config.client_url = "http://medss.int.amurzdrav.ru"
     # Host name and port
     config.host = "localhost"
     # Endpoint base address
