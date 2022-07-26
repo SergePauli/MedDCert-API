@@ -22,7 +22,7 @@ class ApplicationMailer < ActionMailer::Base
 
   def pass_renew_mail
     @email = params[:email]
-    @url = "#{Rails.configuration.client_url}/pass_renew?code=#{params[:link]}"
+    @url = "#{Rails.configuration.client_url}/pass_renew/#{params[:link]}"
     mail(to: @email, subject: "МедСС: запрос на смену пароля")
   end
 end

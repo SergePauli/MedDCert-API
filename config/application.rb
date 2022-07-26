@@ -44,7 +44,7 @@ module CleanAPI
     config.host = "localhost"
     # Endpoint base address
     config.base_url = "http://#{config.host}:5000"
-    config.fias_url = "http://#{config.host}:5050/fias"
+    config.fias_url = "http://fias.int.amurzdrav.ru/fias"
     # code of russia region
     config.region = "28"
 
